@@ -24,6 +24,7 @@
   SmbiosFeaturePkg/SmbiosFeaturePkg.dec
   UserAuthFeaturePkg/UserAuthFeaturePkg.dec
   LogoFeaturePkg/LogoFeaturePkg.dec
+  BeepDebugFeaturePkg/BeepDebugFeaturePkg.dec
 
 #
 # The section below sets all PCDs to FALSE in this DSC file so the feature is not enabled by default.
