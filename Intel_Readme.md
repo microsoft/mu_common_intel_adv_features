@@ -96,10 +96,9 @@ Each feature is maintained in its own feature package called `XxxFeaturePkg` whe
 name.
 
 ### Source Code Organization of Advanced Features
-All advanced feature code is maintained in `edk2-platforms/Features`. Features that are only tested on Intel systems
-are maintained in `edk2-platforms/Features/Intel`. These features are not intended to be constrained to Intel systems.
+All advanced feature code is maintained in this repo. These features are not intended to be constrained to Intel systems.
 
-A package resides at the root of `edk2-platforms/Features/Intel` called [AdvancedFeaturePkg](#AdvancedFeaturePkg).
+A package resides at the root called [AdvancedFeaturePkg](#AdvancedFeaturePkg).
 All feature packages are organized into directories by feature domain. Each feature domain directory is required to
 have a `Readme.md` that explains the scope of features for that domain. Each feature package is required to have a
 `Readme.md` that explain the feature. All feature packages are required to base their `Readme.md` on the
@@ -109,48 +108,42 @@ A generic tree layout of the advanced features is illustrated below. The content
 of course, are subject to change over time.
 
   <pre>
-    WORKSPACE
-          |------edk2
-          |------edk2-non-osi
-          |------edk2-platforms
-          |       |---Features
-          |       |    |--Intel
-          |       |        |------AdvancedFeaturePkg
-          |       |        |
-          |       |        |------TemplateFeaturePkg
-          |       |        |
-          |       |        |------Debugging: Debug related advanced features
-          |       |        |       |------AcpiDebugFeaturePkg
-          |       |        |       |       |---AcpiDebugDxeSmm (module directories)
-          |       |        |       |       |---.  .  .
-          |       |        |       |       |---Include
-          |       |        |       |       |    |---AcpiDebugFeature.dsc (feature build DSC file)
-          |       |        |       |       |    |---PostMemory.fdf (post-memory feature modules)
-          |       |        |       |       |    |---PreMemory.fdf (pre-memory feature modules)
-          |       |        |       |       |    |---.  .  .
-          |       |        |       |       |---AcpiDebugFeaturePkg.dec (feature package DEC file)
-          |       |        |       |       |---AcpiDebugFeature.dsc (feature package build DSC file)
-          |       |        |       |
-          |       |        |       |------Usb3DebugFeaturePkg
-          |       |        |       |       |---.  .  .
-          |       |        |       |
-          |       |        |       |------.  .  .
-          |       |        |------Network: Network related advanced features
-          |       |        |       |------.  .  .
-          |       |        |
-          |       |        |------OutOfBandManagement: Out-of-Band Management related advanced features
-          |       |        |       |------.  .  .
-          |       |        |
-          |       |        |------PowerManagement: Power Management related advanced features
-          |       |        |       |------.  .  .
-          |       |        |
-          |       |        |------SystemInformation: System Information related advanced features
-          |       |        |       |------.  .  .
-          |       |        |
-          |       |        |------UserInterface: User Interface related advanced features
-          |       |        |       |------.  .  .
-          |       |        |
-          |------FSP
+    REPO_ROOT
+          |------AdvancedFeaturePkg
+          |
+          |------TemplateFeaturePkg
+          |
+          |------Debugging: Debug related advanced features
+          |       |------AcpiDebugFeaturePkg
+          |       |       |---AcpiDebugDxeSmm (module directories)
+          |       |       |---.  .  .
+          |       |       |---Include
+          |       |       |    |---AcpiDebugFeature.dsc (feature build DSC file)
+          |       |       |    |---PostMemory.fdf (post-memory feature modules)
+          |       |       |    |---PreMemory.fdf (pre-memory feature modules)
+          |       |       |    |---.  .  .
+          |       |       |---AcpiDebugFeaturePkg.dec (feature package DEC file)
+          |       |       |---AcpiDebugFeature.dsc (feature package build DSC file)
+          |       |
+          |       |------Usb3DebugFeaturePkg
+          |       |       |---.  .  .
+          |       |
+          |       |------.  .  .
+          |------Network: Network related advanced features
+          |       |------.  .  .
+          |
+          |------OutOfBandManagement: Out-of-Band Management related advanced features
+          |       |------.  .  .
+          |
+          |------PowerManagement: Power Management related advanced features
+          |       |------.  .  .
+          |
+          |------SystemInformation: System Information related advanced features
+          |       |------.  .  .
+          |
+          |------UserInterface: User Interface related advanced features
+          |       |------.  .  .
+          |
   </pre>
 
 ## Adding a New Advanced Feature
@@ -204,25 +197,7 @@ At a minimum, an advanced feature must consist of the following elements:
 
 9. Build the advanced feature package to ensure the build is successful:
 
-    From the workspace root:
-    1. cd edk2-platforms/edk2
-    2. Execute edksetup.bat (Windows) or edksetup.sh (Linux).
-    3. Verify the "WORKSPACE" environment variable is set to the edk2 directory in your workspace.
-    4. Set the "PACKAGES_PATH" environment variable to include the edk2-platforms/Platform/Intel, edk2-platforms/Silicon/Intel,
-       and edk2-platforms/Features/Intel directories.
-       * Windows example:
-         * set PACKAGES_PATH=c:\Edk2Workspace\edk2-platforms\Platform\Intel;
-                             c:\Edk2Workspace\edk2-platforms\Silicon\Intel;
-                             c:\Edk2Workspace\edk2-platforms\Features\Intel
-       * Linux example:
-         * export PACKAGES_PATH=~/Edk2Workspace/edk2-platforms/Platform/Intel:
-                                ~/Edk2Workspace/edk2-platforms/Silicon/Intel:
-                                ~/Edk2Workspace/edk2-platforms/Features/Intel
-    5. cd edk2-platforms/Features/Intel
-    6. <pre>build -p FeatureDomainDirectory/XxxFeaturePkg/XxxFeaturePkg.dsc -a IA32 -a X64</pre>
-
-       *Note:* -a specifies the architecture. Typically IA32 and X64 modules are built for 32-bit PEI and 64-bit
-       DXE though build for your specific requirements.
+    TODO
 
 10. Add the advanced feature to `AdvancedFeaturePkg` so it is available to board packages.
     1. Add `XxxFeaturePkg/Include/XxxFeature.dsc` to `AdvancedFeatures.dsc`
