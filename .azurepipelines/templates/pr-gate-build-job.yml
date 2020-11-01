@@ -25,8 +25,8 @@ jobs:
       TARGET_Debugging:
         Build.Pkgs: 'AcpiDebugFeaturePkg,BeepDebugFeaturePkg,PostCodeDebugFeaturePkg,Usb3DebugFeaturePkg'
         Build.Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
-      TARGET_Network_OutOfBandManagement_PowerManagement:
-        Build.Pkgs: 'NetworkFeaturePkg,IpmiFeaturePkg,SpcrFeaturePkg,S3FeaturePkg'
+      TARGET_OutOfBandManagement_PowerManagement:
+        Build.Pkgs: 'IpmiFeaturePkg,SpcrFeaturePkg,S3FeaturePkg'
         Build.Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
       TARGET_SystemInformation_UserInterface:
         Build.Pkgs: 'SmbiosFeaturePkg,LogoFeaturePkg,UserAuthFeaturePkg,VirtualKeyboardFeaturePkg'

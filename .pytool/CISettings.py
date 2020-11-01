@@ -49,8 +49,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             "BeepDebugFeaturePkg",
             "PostCodeDebugFeaturePkg",
             "Usb3DebugFeaturePkg",
-            # Network
-            "NetworkFeaturePkg",
             # OutOfBandManagement
             "IpmiFeaturePkg",
             "SpcrFeaturePkg",
@@ -191,7 +189,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         ''' Return a list of workspace relative paths that should be mapped as edk2 PackagesPath '''
         result = [
             "Debugging",
-            "Network",
             "OutOfBandManagement",
             "PowerManagement",
             "SystemInformation",
