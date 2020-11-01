@@ -58,7 +58,12 @@ Bug Fixes-dev
 2008_CIBuild Changes
 --------------------
 
-- Incomplete
+- [TCBZ3039] Replace PcdSet32S with PcdSet32
+- Add a NULL RngLib to UserAuthFeaturePkg.dsc
+- Add FltUsedLib to UserAuthFeaturePkg.dsc
+- TEMP: Remove Markdown lint
+- [TCBZ3038] IpmiFeaturePkg.dec has incorrect LibraryClasses
+- [TCBZ3037] Add components that are missing in DSCs
 
 2008_Rebase Changes
 -------------------
