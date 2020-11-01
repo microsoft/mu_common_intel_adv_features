@@ -9,6 +9,8 @@ tags/
 BuildConfig.conf
 
 # Ignore cloned dependencies
+/Common
+/Silicon
 /MU_BASECORE
 
 # Ignore unused UDK PKGs.
