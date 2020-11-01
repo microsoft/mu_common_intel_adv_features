@@ -28,3 +28,8 @@
 # This package always builds the feature.
 #
 !include Include/PostCodeDebugFeature.dsc
+
+# MU_CHANGE [BEGIN] - [TCBZ3037] Add several components that are missing in DSCs
+[Components]
+    PostCodeDebugFeaturePkg/Library/PostCodeMapLib/PostCodeMapLib.inf
+# MU_CHANGE [END] - [TCBZ3037] Add several components that are missing in DSCs
