@@ -177,12 +177,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .. CoreCI
 
-.. _Windows_VS2019: http://corthon.com
-.. |WindowsCiBuild| image:: https://img.shields.io/badge/ci-coming_soon-green
-.. |WindowsCiTest| image:: https://img.shields.io/badge/tests-coming_soon-yellow
+.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=73&&branchName=release%2F202008
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20VS2019?branchName=release%2F202008
+.. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/73.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: http://corthon.com
-.. |UbuntuCiBuild| image:: https://img.shields.io/badge/ci-coming_soon-green
-.. |UbuntuCiTest| image:: https://img.shields.io/badge/tests-coming_soon-yellow
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=74&branchName=release%2F202008
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20Ubuntu%20GCC5?branchName=release%2F202008
+.. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/74.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
