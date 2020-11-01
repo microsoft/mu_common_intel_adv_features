@@ -20,19 +20,19 @@ Detailed Feature Information
 
 Far more details about using this repo can be found in: `Intel Features Readme <Intel_Readme.md>`_.
 
-Branch Status - release/202005
+Branch Status - release/202008
 ==============================
 
 :Status:
   In Development
 
 :Entered Development:
-  2020/07/27
+  2020/10/31
 
 :Anticipated Stabilization:
-  August 2020
+  November 2020
 
-Branch Changes - release/202005
+Branch Changes - release/202008
 ===============================
 
 Breaking Changes-dev
@@ -50,17 +50,17 @@ Bug Fixes-dev
 
 - None
 
-2005_RefBoot Changes
+2008_RefBoot Changes
 --------------------
 
 - Incomplete
 
-2005_CIBuild Changes
+2008_CIBuild Changes
 --------------------
 
 - Incomplete
 
-2005_Rebase Changes
+2008_Rebase Changes
 -------------------
 
 | Starting commit: N/A
