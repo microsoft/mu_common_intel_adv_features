@@ -42,7 +42,27 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         ''' return iterable of edk2 packages supported by this build.
         These should be edk2 workspace relative paths '''
 
-        return ("AdvancedFeaturePkg", )
+        # Make sure all containing folders are added in GetPackagesPath()
+        return (
+            # Debugging
+            "AcpiDebugFeaturePkg",
+            "BeepDebugFeaturePkg",
+            "PostCodeDebugFeaturePkg",
+            "Usb3DebugFeaturePkg",
+            # Network
+            "NetworkFeaturePkg",
+            # OutOfBandManagement
+            "IpmiFeaturePkg",
+            "SpcrFeaturePkg",
+            # PowerManagement
+            "S3FeaturePkg",
+            # SystemInformation
+            "SmbiosFeaturePkg",
+            # UserInterface
+            "LogoFeaturePkg",
+            "UserAuthFeaturePkg",
+            "VirtualKeyboardFeaturePkg",
+        )
 
     def GetArchitecturesSupported(self):
         ''' return iterable of edk2 architectures supported by this build '''
@@ -153,13 +173,30 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 "Path": "MU_BASECORE",
                 "Url": "https://github.com/Microsoft/mu_basecore.git",
                 "Branch": "release/202008"
+            },
+            {
+                "Path": "Common/MU_TIANO",
+                "Url": "https://github.com/Microsoft/mu_tiano_plus.git",
+                "Branch": "release/202008"
+            },
+            {
+                "Path": "Silicon/Intel/MU_TIANO",
+                "Url": "https://github.com/Microsoft/mu_silicon_intel_tiano.git",
+                "Branch": "release/202008"
             }
         ]
 
 
     def GetPackagesPath(self):
         ''' Return a list of workspace relative paths that should be mapped as edk2 PackagesPath '''
-        result = []
+        result = [
+            "Debugging",
+            "Network",
+            "OutOfBandManagement",
+            "PowerManagement",
+            "SystemInformation",
+            "UserInterface",
+        ]
         for a in self.GetDependencies():
             result.append(a["Path"])
         return result
