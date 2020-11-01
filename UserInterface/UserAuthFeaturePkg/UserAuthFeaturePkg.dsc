@@ -28,3 +28,9 @@
 # This package always builds the feature.
 #
 !include Include/UserAuthFeature.dsc
+
+# MU_CHANGE [BEGIN] - [TCBZ3037] Add several components that are missing in DSCs
+[Components]
+    UserAuthFeaturePkg/Library/PlatformPasswordLibNull/PlatformPasswordLibNull.inf
+    UserAuthFeaturePkg/Library/UserPasswordLib/UserPasswordLib.inf
+# MU_CHANGE [END] - [TCBZ3037] Add several components that are missing in DSCs
