@@ -20,19 +20,19 @@ Detailed Feature Information
 
 Far more details about using this repo can be found in: `Intel Features Readme <Intel_Readme.md>`_.
 
-Branch Status - release/202005
+Branch Status - release/202102
 ==============================
 
 :Status:
   In Development
 
 :Entered Development:
-  2020/07/27
+  2021/03/30
 
 :Anticipated Stabilization:
-  August 2020
+  May 2020
 
-Branch Changes - release/202005
+Branch Changes - release/202102
 ===============================
 
 Breaking Changes-dev
@@ -50,21 +50,21 @@ Bug Fixes-dev
 
 - None
 
-2005_RefBoot Changes
+2102_RefBoot Changes
 --------------------
 
 - Incomplete
 
-2005_CIBuild Changes
+2102_CIBuild Changes
 --------------------
 
 - Incomplete
 
-2005_Rebase Changes
+2102_Rebase Changes
 -------------------
 
-| Starting commit: N/A
-| Destination commit: N/A
+| Starting commit: 8849dbf
+| Destination commit: 8c1b535
 
 - None
 
@@ -74,7 +74,7 @@ Repo Maintenance
 Upstream Sync Details
 ---------------------
 
-- edk2_platforms - a8eecf1871985a3e1f0026b621798ad6c9f64625
+- edk2_platforms - 4472034ad3ee6c2dd0aa22a3aa885d37388bfec0
 
 Instructions
 ------------
@@ -177,12 +177,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .. CoreCI
 
-.. _Windows_VS2019: http://corthon.com
-.. |WindowsCiBuild| image:: https://img.shields.io/badge/ci-coming_soon-green
-.. |WindowsCiTest| image:: https://img.shields.io/badge/tests-coming_soon-yellow
+.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=73&&branchName=release%2F202102
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20VS2019?branchName=release%2F202102
+.. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/73.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: http://corthon.com
-.. |UbuntuCiBuild| image:: https://img.shields.io/badge/ci-coming_soon-green
-.. |UbuntuCiTest| image:: https://img.shields.io/badge/tests-coming_soon-yellow
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=74&branchName=release%2F202102
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20Ubuntu%20GCC5?branchName=release%2F202102
+.. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/74.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
