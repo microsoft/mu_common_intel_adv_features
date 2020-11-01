@@ -55,7 +55,8 @@ steps:
 - template: spell-check-prereq-steps.yml
 
 # install markdownlint check prereqs
-- template: markdownlint-check-prereq-steps.yml
+# TEMP: Remove Markdown lint since we don't own these docs.
+#- template: markdownlint-check-prereq-steps.yml
 
 # Build repo
 # MU_CHANGE - We use CI dependencies as well as submodules.
