@@ -29,6 +29,10 @@
 #
 !include Include/UserAuthFeature.dsc
 
+# MU_CHANGE - Mu CryptoPkg uses FltUsedLib
+[LibraryClasses]
+    FltUsedLib|MdePkg/Library/FltUsedLib/FltUsedLib.inf
+
 # MU_CHANGE [BEGIN] - [TCBZ3037] Add several components that are missing in DSCs
 [Components]
     UserAuthFeaturePkg/Library/PlatformPasswordLibNull/PlatformPasswordLibNull.inf
