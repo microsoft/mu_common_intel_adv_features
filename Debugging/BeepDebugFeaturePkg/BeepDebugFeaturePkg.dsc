@@ -56,3 +56,9 @@
 # This package always builds the feature.
 #
 !include Include/BeepDebugFeature.dsc
+
+# MU_CHANGE [BEGIN] - [TCBZ3037] Add several components that are missing in DSCs
+[Components]
+    BeepDebugFeaturePkg/Library/BeepLib/BeepLibNull.inf
+    BeepDebugFeaturePkg/Library/BeepMapLib/BeepMapLib.inf
+# MU_CHANGE [END] - [TCBZ3037] Add several components that are missing in DSCs

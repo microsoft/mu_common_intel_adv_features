@@ -46,3 +46,8 @@
 # This package always builds the feature.
 #
 !include Include/SpcrFeature.dsc
+
+# MU_CHANGE [BEGIN] - [TCBZ3037] Add several components that are missing in DSCs
+[Components]
+    SpcrFeaturePkg/Library/SpcrDeviceLibNull/SpcrDeviceLibNull.inf
+# MU_CHANGE [END] - [TCBZ3037] Add several components that are missing in DSCs
