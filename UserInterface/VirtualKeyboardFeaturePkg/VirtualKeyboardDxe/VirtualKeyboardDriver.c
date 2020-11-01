@@ -228,8 +228,10 @@ Error:
   //
   // Restore setting if connect device fail.
   //
-  PcdSet32S (PcdConOutRow, mOrigConOutRow);
-  PcdSet32S (PcdSetupConOutRow, mOrigSetupConOutRow);
+  // MU_CHANGE [BEGIN] - [TCBZ3039] Replace PcdSet32S with PcdSet32
+  PcdSet32 (PcdConOutRow, mOrigConOutRow);
+  PcdSet32 (PcdSetupConOutRow, mOrigSetupConOutRow);
+  // MU_CHANGE [END] - [TCBZ3039] Replace PcdSet32S with PcdSet32
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VirtualKeyboardDriverStart Failed, Status: %r\n", Status));
 
