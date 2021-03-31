@@ -138,6 +138,7 @@ VirtualKeyboardDriverStart (
 {
   VK_CONTEXT *VkContext;
   EFI_STATUS Status;
+  EFI_STATUS PcdStatus;     // MU_CHANGE - TCBZ3039 Capture the Status of the PCD Sets.
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_INFO, "VirtualKeyboardDriverStart Start\n"));
 
@@ -228,8 +229,12 @@ Error:
   //
   // Restore setting if connect device fail.
   //
-  PcdSet32S (PcdConOutRow, mOrigConOutRow);
-  PcdSet32S (PcdSetupConOutRow, mOrigSetupConOutRow);
+  // MU_CHANGE [BEGIN] - TCBZ3039 Capture the Status of the PCD Sets.
+  PcdStatus = PcdSet32S (PcdConOutRow, mOrigConOutRow);
+  ASSERT_EFI_ERROR (PcdStatus);
+  PcdStatus = PcdSet32S (PcdSetupConOutRow, mOrigSetupConOutRow);
+  ASSERT_EFI_ERROR (PcdStatus);
+  // MU_CHANGE [END] - TCBZ3039 Capture the Status of the PCD Sets.
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VirtualKeyboardDriverStart Failed, Status: %r\n", Status));
 
