@@ -23,6 +23,9 @@
     },
     ## options defined .pytool/Plugin/CompilerPlugin
     "CompilerPlugin": {
+        # MU_CHNAGE - This feature is currently an "include" feature, I think.
+        #             Doesn't seem like it can build without a platform.
+        "skip": True,
         "DscPath": "SmbiosFeaturePkg.dsc"
     },
 
