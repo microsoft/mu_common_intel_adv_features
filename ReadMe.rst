@@ -20,19 +20,19 @@ Detailed Feature Information
 
 Far more details about using this repo can be found in: `Intel Features Readme <Intel_Readme.md>`_.
 
-Branch Status - release/202108
+Branch Status - release/202111
 ==============================
 
 :Status:
   In Development
 
 :Entered Development:
-  September 2021
-
-:Anticipated Stabilization:
   November 2021
 
-Branch Changes - release/202108
+:Anticipated Stabilization:
+  February 2022
+
+Branch Changes - release/202111
 ===============================
 
 Breaking Changes-dev
@@ -50,23 +50,23 @@ Bug Fixes-dev
 
 - None
 
-2108_RefBoot Changes
+2111_RefBoot Changes
 --------------------
 
 - Incomplete
 
-2108_CIBuild Changes
+2111_CIBuild Changes
 --------------------
 
-- Disabled compile CI for SmbiosFeaturePkg due to build elusive build error
+- None
 
-2108_Rebase Changes
+2111_Rebase Changes
 -------------------
 
-| Starting commit: 4146c2f
-| Destination commit: 1597754
+| Starting commit: 88381b2
+| Destination commit: 4994163
 
-- Incomplete
+- None
 
 Repo Maintenance
 ================
@@ -74,7 +74,7 @@ Repo Maintenance
 Upstream Sync Details
 ---------------------
 
-- edk2_platforms - ff31f8f683 ("Platform/SiFive: Add VariablePolicyHelperLib to the dsc files", 2021-08-23)
+- edk2_platforms - 15d8aa1828a ("UserAuthFeaturePkg: VerifyPassword() allows one extra password attempt", 2021-12-7)
 
 Instructions
 ------------
@@ -177,12 +177,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .. CoreCI
 
-.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=73&&branchName=release%2F202108
-.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20VS2019?branchName=release%2F202108
+.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=73&&branchName=release%2F202111
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20VS2019?branchName=release%2F202111
 .. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/73.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=74&branchName=release%2F202108
-.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20Ubuntu%20GCC5?branchName=release%2F202108
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=74&branchName=release%2F202111
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Common%20Intel%20AdvFeatures%20CI%20Ubuntu%20GCC5?branchName=release%2F202111
 .. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/74.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
