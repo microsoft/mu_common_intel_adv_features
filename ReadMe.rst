@@ -58,7 +58,7 @@ Bug Fixes-dev
 2108_CIBuild Changes
 --------------------
 
-- Incomplete
+- Disabled compile CI for SmbiosFeaturePkg due to build elusive build error
 
 2108_Rebase Changes
 -------------------
