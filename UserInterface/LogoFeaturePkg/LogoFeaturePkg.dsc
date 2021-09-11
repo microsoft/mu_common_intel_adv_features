@@ -21,39 +21,19 @@
   SUPPORTED_ARCHITECTURES        = IA32|X64
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
-  PEI_ARCH                       = IA32
-  DXE_ARCH                       = X64
 
-[Packages]
-  MinPlatformPkg/MinPlatformPkg.dec
-  LogoFeaturePkg/LogoFeaturePkg.dec
+!include MdePkg/MdeLibs.dsc.inc     # MU_CHANGE
 
-[PcdsFeatureFlag]
-  gLogoFeaturePkgTokenSpaceGuid.PcdJpgEnable                              |FALSE
+[LibraryClasses]
+  BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
+  BaseMemoryLib|MdePkg/Library/BaseMemoryLibRepStr/BaseMemoryLibRepStr.inf
+  DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
+  UefiBootServicesTableLib|MdePkg/Library/UefiBootServicesTableLib/UefiBootServicesTableLib.inf
+  UefiDriverEntryPoint|MdePkg/Library/UefiDriverEntryPoint/UefiDriverEntryPoint.inf
 
-  #
-  # PCD needed for MinPlatform build includes
-  #
-  gMinPlatformPkgTokenSpaceGuid.PcdSmiHandlerProfileEnable                |FALSE
-  gMinPlatformPkgTokenSpaceGuid.PcdUefiSecureBootEnable                   |FALSE
-  gMinPlatformPkgTokenSpaceGuid.PcdPerformanceEnable                      |FALSE
+[LibraryClasses.common.DXE_DRIVER]
+  PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
 
-#
-# Include common libraries
-#
-!include MinPlatformPkg/Include/Dsc/CoreCommonLib.dsc
-!include MinPlatformPkg/Include/Dsc/CorePeiLib.dsc
-!include MinPlatformPkg/Include/Dsc/CoreDxeLib.dsc
-
-#
-# This package always builds the feature.
-#
-!include Include/LogoFeature.dsc
-
-#
-# Since the feature include only builds the x64 BMP version, allow building
-# all drivers in this package in 32b or 64b modes
-#
 [Components]
   LogoFeaturePkg/LogoDxe/JpegLogoDxe.inf
   LogoFeaturePkg/LogoDxe/LogoDxe.inf
