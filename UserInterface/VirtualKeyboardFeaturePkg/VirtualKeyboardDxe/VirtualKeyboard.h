@@ -40,68 +40,68 @@ extern EFI_COMPONENT_NAME2_PROTOCOL  gVirtualKeyboardComponentName2;
 ///
 /// Debug raw data points
 ///
-#define DEBUG_VK_POINTS               DEBUG_INFO
+#define DEBUG_VK_POINTS  DEBUG_INFO
 
 ///
 /// Debug data point scaling
 ///
-#define DEBUG_VK_POINT_SCALING        DEBUG_INFO
+#define DEBUG_VK_POINT_SCALING  DEBUG_INFO
 
 ///
 /// Debug key press
 ///
-#define DEBUG_VK_KEYS                 DEBUG_INFO
+#define DEBUG_VK_KEYS  DEBUG_INFO
 
 ///
 /// Debug routine entry and exit
 ///
-#define DEBUG_VK_ROUTINE_ENTRY_EXIT   DEBUG_VERBOSE
+#define DEBUG_VK_ROUTINE_ENTRY_EXIT  DEBUG_VERBOSE
 
 ///
 /// Display the graphics info
 ///
-#define DEBUG_VK_GRAPHICS_INFO        DEBUG_INFO
+#define DEBUG_VK_GRAPHICS_INFO  DEBUG_INFO
 
 ///
 /// Display the timer entry and exit
 ///
-#define DEBUG_VK_TIMER_ENTRY_EXIT     DEBUG_VERBOSE
+#define DEBUG_VK_TIMER_ENTRY_EXIT  DEBUG_VERBOSE
 
 ///
 /// Signature
 ///
-#define VK_SIGNATURE                  SIGNATURE_32 ('V', 'K', 'e', 'y')
-#define VK_NOTIFY_SIGNATURE           SIGNATURE_32 ('V', 'K', 'n', 's')
+#define VK_SIGNATURE         SIGNATURE_32 ('V', 'K', 'e', 'y')
+#define VK_NOTIFY_SIGNATURE  SIGNATURE_32 ('V', 'K', 'n', 's')
 
 ///
 /// Poll interval
 ///
-#define VK_POLL_INTERVAL              (1000 * 1000)
+#define VK_POLL_INTERVAL  (1000 * 1000)
 
 ///
 /// Define the touch timeout in poll intervals
 ///
-#define VK_REPEAT_TIMEOUT             5
+#define VK_REPEAT_TIMEOUT  5
 
 ///
 /// TPL used to synchronize add/remove from list
 ///
-#define TPL_VK_SYNC                   TPL_NOTIFY
+#define TPL_VK_SYNC  TPL_NOTIFY
 
 ///
 /// Dimension of an array ( number of elements )
 ///
-#define DIM(x)      ( sizeof ( x ) / sizeof ( x [ 0 ]))
+#define DIM(x)  ( sizeof ( x ) / sizeof ( x [ 0 ]))
 
 ///
 /// Define Key buffer
 ///
-#define MAX_KEY_BUF_SIZE 64
+#define MAX_KEY_BUF_SIZE  64
 
 ///
 /// Define Transparent Weight
 ///
-#define TRANSPARENCY_WEIGHT 50
+#define TRANSPARENCY_WEIGHT  50
 
 typedef struct _VK_CONTEXT VK_CONTEXT;
 
@@ -200,18 +200,18 @@ typedef enum VK_DISPLAY_ATTRIBUTE {
 } VK_DISPLAY_ATTRIBUTE;
 
 typedef struct _VK_STRUCT {
-  UINT16      DisStartX;
-  UINT16      DisStartY;
-  UINT16      DisEndX;
-  UINT16      DisEndY;
-  VK_KEY_TYPE PageFont[VkPageMaximum];
+  UINT16         DisStartX;
+  UINT16         DisStartY;
+  UINT16         DisEndX;
+  UINT16         DisEndY;
+  VK_KEY_TYPE    PageFont[VkPageMaximum];
 } VK_STRUCT;
 
 typedef struct _VK_NOTIFY {
-  UINTN                               Signature;
-  EFI_KEY_DATA                        KeyData;
-  EFI_KEY_NOTIFY_FUNCTION             KeyNotificationFn;
-  LIST_ENTRY                          NotifyEntry;
+  UINTN                      Signature;
+  EFI_KEY_DATA               KeyData;
+  EFI_KEY_NOTIFY_FUNCTION    KeyNotificationFn;
+  LIST_ENTRY                 NotifyEntry;
 } VK_NOTIFY;
 
 ///
@@ -221,166 +221,166 @@ struct _VK_CONTEXT {
   ///
   /// Structure identification
   ///
-  UINTN                             Signature;
+  UINTN                                Signature;
 
   ///
   /// Controller Handle
   ///
-  EFI_HANDLE                        Controller;
+  EFI_HANDLE                           Controller;
 
   ///
   /// Upper level API
   ///
-  EFI_SIMPLE_TEXT_INPUT_PROTOCOL    SimpleTextIn;
+  EFI_SIMPLE_TEXT_INPUT_PROTOCOL       SimpleTextIn;
 
   ///
   /// Simple Text In EX
   ///
-  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL SimpleTextInEx;
+  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL    SimpleTextInEx;
 
   ///
   /// Lower level APIs
   ///
-  EFI_ABSOLUTE_POINTER_PROTOCOL     *AbsolutePointer;
-  EFI_GRAPHICS_OUTPUT_PROTOCOL      *GraphicsOutput;
+  EFI_ABSOLUTE_POINTER_PROTOCOL        *AbsolutePointer;
+  EFI_GRAPHICS_OUTPUT_PROTOCOL         *GraphicsOutput;
 
   ///
   /// Flag when the last poll indicated a touch event
   ///
-  BOOLEAN                           TouchActive;
+  BOOLEAN                              TouchActive;
 
   ///
   /// Time to poll for touch input
   ///
-  EFI_EVENT                         TimerEvent;
+  EFI_EVENT                            TimerEvent;
 
   ///
   /// HII handle to get image data used
   ///
-  EFI_HII_HANDLE                    HiiHandle;
-  EFI_HII_IMAGE_EX_PROTOCOL         *HiiImageEx;
+  EFI_HII_HANDLE                       HiiHandle;
+  EFI_HII_IMAGE_EX_PROTOCOL            *HiiImageEx;
 
   ///
   /// Keyboard body background buffer information
   ///
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL     *VkBodyBackgroundBltBuffer;
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL     *VkBodyCompoundBltBuffer;
-  UINTN                             VkBodyBltSize;
-  UINTN                             VkBodyBltStartX;
-  UINTN                             VkBodyBltStartY;
-  UINTN                             VkBodyBltHeight;
-  UINTN                             VkBodyBltWidth;
-  BOOLEAN                           IsBackgroundChanged;
+  EFI_GRAPHICS_OUTPUT_BLT_PIXEL        *VkBodyBackgroundBltBuffer;
+  EFI_GRAPHICS_OUTPUT_BLT_PIXEL        *VkBodyCompoundBltBuffer;
+  UINTN                                VkBodyBltSize;
+  UINTN                                VkBodyBltStartX;
+  UINTN                                VkBodyBltStartY;
+  UINTN                                VkBodyBltHeight;
+  UINTN                                VkBodyBltWidth;
+  BOOLEAN                              IsBackgroundChanged;
 
   ///
   /// Icon buffer information
   ///
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL     *IconBltBuffer;
-  UINTN                             IconBltSize;
-  UINTN                             IconBltHeight;
-  UINTN                             IconBltWidth;
+  EFI_GRAPHICS_OUTPUT_BLT_PIXEL        *IconBltBuffer;
+  UINTN                                IconBltSize;
+  UINTN                                IconBltHeight;
+  UINTN                                IconBltWidth;
 
   ///
   /// Full icon background buffer information
   ///
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL     *FullIconBackBuffer;
-  UINTN                             FullIconBackStartX;
-  UINTN                             FullIconBackStartY;
-  UINTN                             FullIconBackHeight;
-  UINTN                             FullIconBackWidth;
-  UINTN                             FullIconBackSize;
-  BOOLEAN                           FullIconUpdatedFlag;
+  EFI_GRAPHICS_OUTPUT_BLT_PIXEL        *FullIconBackBuffer;
+  UINTN                                FullIconBackStartX;
+  UINTN                                FullIconBackStartY;
+  UINTN                                FullIconBackHeight;
+  UINTN                                FullIconBackWidth;
+  UINTN                                FullIconBackSize;
+  BOOLEAN                              FullIconUpdatedFlag;
 
   ///
   /// Simple icon background buffer information
   ///
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL     *SimIconBackBuffer;
-  UINTN                             SimIconBackStartX;
-  UINTN                             SimIconBackStartY;
-  UINTN                             SimIconBackHeight;
-  UINTN                             SimIconBackWidth;
-  UINTN                             SimIconBackSize;
-  BOOLEAN                           SimIconUpdatedFlag;
+  EFI_GRAPHICS_OUTPUT_BLT_PIXEL        *SimIconBackBuffer;
+  UINTN                                SimIconBackStartX;
+  UINTN                                SimIconBackStartY;
+  UINTN                                SimIconBackHeight;
+  UINTN                                SimIconBackWidth;
+  UINTN                                SimIconBackSize;
+  BOOLEAN                              SimIconUpdatedFlag;
 
   ///
   /// Small Icon
   ///
-  EFI_IMAGE_INPUT                   *SmallIcon;
+  EFI_IMAGE_INPUT                      *SmallIcon;
 
   ///
   /// Full Icon
   ///
-  EFI_IMAGE_INPUT                   *FullIcon;
+  EFI_IMAGE_INPUT                      *FullIcon;
 
   ///
   /// Simple Key body
   ///
-  EFI_IMAGE_INPUT                   *SimKeyBody;
+  EFI_IMAGE_INPUT                      *SimKeyBody;
 
   ///
   /// Digital key body
   ///
-  EFI_IMAGE_INPUT                   *DigKeyBody;
+  EFI_IMAGE_INPUT                      *DigKeyBody;
 
   ///
   /// Capital Letter Key board
   ///
-  EFI_IMAGE_INPUT                   *CapLeKeyBody;
+  EFI_IMAGE_INPUT                      *CapLeKeyBody;
 
   ///
   /// Screen check buffer.
   /// This is used to check if screen is kept scrolling up.
   ///
-  EFI_GRAPHICS_OUTPUT_BLT_PIXEL     *ScreenCheckBuffer;
-  UINTN                             ScreenCheckBufferSize;
+  EFI_GRAPHICS_OUTPUT_BLT_PIXEL        *ScreenCheckBuffer;
+  UINTN                                ScreenCheckBufferSize;
 
   ///
   /// Key state
   ///
-  BOOLEAN                           KeyPressed;
+  BOOLEAN                              KeyPressed;
 
   ///
   /// Keyboard display status
   ///
-  VK_DISPLAY_ATTRIBUTE              CurrentKeyboardDisplay;
-  VK_DISPLAY_ATTRIBUTE              TargetKeyboardDisplay;
+  VK_DISPLAY_ATTRIBUTE                 CurrentKeyboardDisplay;
+  VK_DISPLAY_ATTRIBUTE                 TargetKeyboardDisplay;
 
   ///
   /// Keyboard icon display status
   ///
-  BOOLEAN                           IsIconShowed;
-  UINT8                             IconReDrawCheck;
+  BOOLEAN                              IsIconShowed;
+  UINT8                                IconReDrawCheck;
 
   ///
   /// Keyboard body Image address
   /// Size of KeyboardBodyPtr must larger than mFullKeyboardBody
   ///
-  UINT32                            NumOfKeysInfo;
-  VK_STRUCT                         KeyboardBodyPtr[50];
+  UINT32                               NumOfKeysInfo;
+  VK_STRUCT                            KeyboardBodyPtr[50];
 
   ///
   /// KeyBuffer
   ///
-  EFI_EVENT                         KeyNotifyProcessEvent;
-  EFI_KEY_TOGGLE_STATE              KeyToggleState;
-  EFI_KEY_DATA                      Keybuffer[MAX_KEY_BUF_SIZE];
-  UINT8                             KeyStartIndex;
-  UINT8                             KeyEndIndex;
-  UINT16                            KeyTouchedTimeOut;
-  BOOLEAN                           IsShiftKeyFlag;
-  BOOLEAN                           IsCapsLockFlag;
-  BOOLEAN                           IsSupportPartialKey;
-  BOOLEAN                           IsRedrawUpdateUI;
-  VK_PAGE_TYPE                      PageNumber;
-  LIST_ENTRY                        NotifyList;
+  EFI_EVENT                            KeyNotifyProcessEvent;
+  EFI_KEY_TOGGLE_STATE                 KeyToggleState;
+  EFI_KEY_DATA                         Keybuffer[MAX_KEY_BUF_SIZE];
+  UINT8                                KeyStartIndex;
+  UINT8                                KeyEndIndex;
+  UINT16                               KeyTouchedTimeOut;
+  BOOLEAN                              IsShiftKeyFlag;
+  BOOLEAN                              IsCapsLockFlag;
+  BOOLEAN                              IsSupportPartialKey;
+  BOOLEAN                              IsRedrawUpdateUI;
+  VK_PAGE_TYPE                         PageNumber;
+  LIST_ENTRY                           NotifyList;
 };
 
 ///
 /// Locate VK_CONTEXT from protocol
 ///
-#define VK_CONTEXT_FROM_PROTOCOL(a)                CR (a, VK_CONTEXT, SimpleTextIn, VK_SIGNATURE)
-#define VK_CONTEXT_FROM_SIMPLETEXTINEX_PROTOCOL(a) CR (a, VK_CONTEXT, SimpleTextInEx, VK_SIGNATURE)
-#define VK_CONTEXT_FROM_VKBD_PROTOCOL(a)           CR (a, VK_CONTEXT, VkbdProtocol, VK_SIGNATURE)
+#define VK_CONTEXT_FROM_PROTOCOL(a)                 CR (a, VK_CONTEXT, SimpleTextIn, VK_SIGNATURE)
+#define VK_CONTEXT_FROM_SIMPLETEXTINEX_PROTOCOL(a)  CR (a, VK_CONTEXT, SimpleTextInEx, VK_SIGNATURE)
+#define VK_CONTEXT_FROM_VKBD_PROTOCOL(a)            CR (a, VK_CONTEXT, VkbdProtocol, VK_SIGNATURE)
 
 /**
   Start the virtual keyboard driver
@@ -398,8 +398,8 @@ struct _VK_CONTEXT {
 **/
 EFI_STATUS
 VkApiStart (
-  IN OUT VK_CONTEXT *VkContext,
-  IN EFI_HANDLE Controller
+  IN OUT VK_CONTEXT  *VkContext,
+  IN EFI_HANDLE      Controller
   );
 
 /**
@@ -415,7 +415,7 @@ VkApiStart (
 **/
 VOID
 VkApiStop (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -443,8 +443,8 @@ VkApiStop (
 EFI_STATUS
 EFIAPI
 VkKeyboardReset (
-  IN EFI_SIMPLE_TEXT_INPUT_PROTOCOL *This,
-  IN BOOLEAN                        ExtendedVerification
+  IN EFI_SIMPLE_TEXT_INPUT_PROTOCOL  *This,
+  IN BOOLEAN                         ExtendedVerification
   );
 
 /**
@@ -463,8 +463,8 @@ VkKeyboardReset (
 EFI_STATUS
 EFIAPI
 VkKeyboardReadKeyStroke (
-  IN  EFI_SIMPLE_TEXT_INPUT_PROTOCOL *This,
-  OUT EFI_INPUT_KEY                  *Key
+  IN  EFI_SIMPLE_TEXT_INPUT_PROTOCOL  *This,
+  OUT EFI_INPUT_KEY                   *Key
   );
 
 /**
@@ -492,8 +492,8 @@ VkKeyboardReadKeyStroke (
 EFI_STATUS
 EFIAPI
 VkKeyboardResetEx (
-  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN BOOLEAN                           ExtendedVerification
+  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN BOOLEAN                            ExtendedVerification
   );
 
 /**
@@ -511,8 +511,8 @@ VkKeyboardResetEx (
 EFI_STATUS
 EFIAPI
 VkKeyboardReadKeyStrokeEx (
-  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  OUT EFI_KEY_DATA                      *KeyData
+  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  OUT EFI_KEY_DATA                       *KeyData
   );
 
 /**
@@ -529,8 +529,8 @@ VkKeyboardReadKeyStrokeEx (
 EFI_STATUS
 EFIAPI
 VkKeyboardSetState (
-  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN EFI_KEY_TOGGLE_STATE              *KeyToggleState
+  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN EFI_KEY_TOGGLE_STATE               *KeyToggleState
   );
 
 /**
@@ -551,10 +551,10 @@ VkKeyboardSetState (
 EFI_STATUS
 EFIAPI
 VkKeyboardRegisterKeyNotify (
-  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN  EFI_KEY_DATA                      *KeyData,
-  IN  EFI_KEY_NOTIFY_FUNCTION           KeyNotificationFunction,
-  OUT EFI_HANDLE                        *NotifyHandle
+  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN  EFI_KEY_DATA                       *KeyData,
+  IN  EFI_KEY_NOTIFY_FUNCTION            KeyNotificationFunction,
+  OUT EFI_HANDLE                         *NotifyHandle
   );
 
 /**
@@ -570,8 +570,8 @@ VkKeyboardRegisterKeyNotify (
 EFI_STATUS
 EFIAPI
 VkKeyboardUnregisterKeyNotify (
-  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN EFI_HANDLE                        NotificationHandle
+  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN EFI_HANDLE                         NotificationHandle
   );
 
 /**
@@ -585,7 +585,7 @@ VkKeyboardUnregisterKeyNotify (
 **/
 EFI_STATUS
 DrawKeyboardLayout (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -598,7 +598,7 @@ DrawKeyboardLayout (
 **/
 EFI_STATUS
 HideVkBody (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -611,7 +611,7 @@ HideVkBody (
 **/
 EFI_STATUS
 HideVkIcon (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -629,9 +629,9 @@ HideVkIcon (
 EFI_STATUS
 EFIAPI
 DrawVkIcon (
-  IN VK_CONTEXT                    *VkContext,
-  IN EFI_IMAGE_INPUT               *VkImage,
-  IN VK_DISPLAY_ATTRIBUTE          Attribute
+  IN VK_CONTEXT            *VkContext,
+  IN EFI_IMAGE_INPUT       *VkImage,
+  IN VK_DISPLAY_ATTRIBUTE  Attribute
   );
 
 /**
@@ -649,9 +649,9 @@ DrawVkIcon (
 EFI_STATUS
 EFIAPI
 DrawVkBody (
-  IN VK_CONTEXT                    *VkContext,
-  IN EFI_IMAGE_INPUT               *VkImage,
-  IN VK_DISPLAY_ATTRIBUTE          Attribute
+  IN VK_CONTEXT            *VkContext,
+  IN EFI_IMAGE_INPUT       *VkImage,
+  IN VK_DISPLAY_ATTRIBUTE  Attribute
   );
 
 /**
@@ -668,9 +668,9 @@ DrawVkBody (
 **/
 EFI_STATUS
 VkGetMappingFont (
-  IN  VK_CONTEXT *VkContext,
-  IN  VK_STRUCT  KeyItem,
-  OUT UINT32     *FontPtr
+  IN  VK_CONTEXT  *VkContext,
+  IN  VK_STRUCT   KeyItem,
+  OUT UINT32      *FontPtr
   );
 
 /**
@@ -683,7 +683,7 @@ VkGetMappingFont (
 **/
 EFI_STATUS
 CheckIconCleared (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -699,10 +699,10 @@ CheckIconCleared (
 **/
 EFI_STATUS
 ConvertCoordinate (
-  IN  VK_CONTEXT                 *VkContext,
-  IN  EFI_ABSOLUTE_POINTER_STATE Point,
-  OUT UINT32                     *TouchX,
-  OUT UINT32                     *TouchY
+  IN  VK_CONTEXT                  *VkContext,
+  IN  EFI_ABSOLUTE_POINTER_STATE  Point,
+  OUT UINT32                      *TouchX,
+  OUT UINT32                      *TouchY
   );
 
 /**
@@ -715,7 +715,7 @@ ConvertCoordinate (
 **/
 EFI_STATUS
 CheckScreenCleared (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -728,7 +728,7 @@ CheckScreenCleared (
 **/
 EFI_STATUS
 CheckBackgroundChanged (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -739,7 +739,7 @@ CheckBackgroundChanged (
 **/
 VOID
 PreventScreenScrollUp (
-  IN OUT VK_CONTEXT *VkContext
+  IN OUT VK_CONTEXT  *VkContext
   );
 
 /**
@@ -755,9 +755,9 @@ PreventScreenScrollUp (
 **/
 EFI_STATUS
 SetCharacterPosition (
-  IN VK_CONTEXT *VkContext,
-  IN UINT32     DestX,
-  IN UINT32     DestY
+  IN VK_CONTEXT  *VkContext,
+  IN UINT32      DestX,
+  IN UINT32      DestY
   );
 
 /**
@@ -772,8 +772,8 @@ SetCharacterPosition (
 **/
 EFI_STATUS
 KeyboardLayoutHandler (
-  IN VK_CONTEXT *VkContext,
-  IN UINT32     Index
+  IN VK_CONTEXT  *VkContext,
+  IN UINT32      Index
   );
 
 /**
@@ -789,8 +789,8 @@ KeyboardLayoutHandler (
 EFI_STATUS
 EFIAPI
 SaveVkBodyBackgroundBltBuffer (
-  IN VK_CONTEXT *VkContext,
-  IN UINTN      BltSize
+  IN VK_CONTEXT  *VkContext,
+  IN UINTN       BltSize
   );
 
 /**
@@ -806,7 +806,7 @@ SaveVkBodyBackgroundBltBuffer (
 EFI_STATUS
 EFIAPI
 RestoreVkBodyBackgroundBltBuffer (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   );
 
 /**
@@ -823,7 +823,8 @@ RestoreVkBodyBackgroundBltBuffer (
 EFI_STATUS
 EFIAPI
 SaveVkIconBackgroundBltBuffer (
-  IN VK_CONTEXT           *VkContext,
-  IN VK_DISPLAY_ATTRIBUTE IconType
+  IN VK_CONTEXT            *VkContext,
+  IN VK_DISPLAY_ATTRIBUTE  IconType
   );
+
 #endif

@@ -17,10 +17,10 @@
 #include <Library/Usb3DebugPortParamLib.h>
 #include "Usb3DebugPortLibInternal.h"
 
-EFI_SMRAM_DESCRIPTOR        mSmramCheckRanges[MAX_SMRAM_RANGE];
-UINTN                       mSmramCheckRangeCount = 0;
-BOOLEAN                     mUsb3InSmm            = FALSE;
-UINT64                      mUsb3MmioSize         = 0;
+EFI_SMRAM_DESCRIPTOR  mSmramCheckRanges[MAX_SMRAM_RANGE];
+UINTN                 mSmramCheckRangeCount = 0;
+BOOLEAN               mUsb3InSmm            = FALSE;
+UINT64                mUsb3MmioSize         = 0;
 
 /**
   Synchronize the specified transfer ring to update the enqueue and dequeue pointer.
@@ -38,15 +38,15 @@ XhcSyncTrsRing (
   IN TRANSFER_RING             *TrsRing
   )
 {
-  UINTN               Index;
-  TRB_TEMPLATE        *TrsTrb;
+  UINTN         Index;
+  TRB_TEMPLATE  *TrsTrb;
 
   ASSERT (TrsRing != NULL);
 
   //
   // Calculate the latest RingEnqueue and RingPCS
   //
-  TrsTrb = (TRB_TEMPLATE *)(UINTN) TrsRing->RingEnqueue;
+  TrsTrb = (TRB_TEMPLATE *)(UINTN)TrsRing->RingEnqueue;
 
   ASSERT (TrsTrb != NULL);
 
@@ -54,13 +54,14 @@ XhcSyncTrsRing (
     if (TrsTrb->CycleBit != (TrsRing->RingPCS & BIT0)) {
       break;
     }
+
     TrsTrb++;
-    if ((UINT8) TrsTrb->Type == TRB_TYPE_LINK) {
-      ASSERT (((LINK_TRB*)TrsTrb)->TC != 0);
+    if ((UINT8)TrsTrb->Type == TRB_TYPE_LINK) {
+      ASSERT (((LINK_TRB *)TrsTrb)->TC != 0);
       //
       // set cycle bit in Link TRB as normal
       //
-      ((LINK_TRB*)TrsTrb)->CycleBit = TrsRing->RingPCS & BIT0;
+      ((LINK_TRB *)TrsTrb)->CycleBit = TrsRing->RingPCS & BIT0;
       //
       // Toggle PCS maintained by software
       //
@@ -68,10 +69,11 @@ XhcSyncTrsRing (
       TrsTrb           = (TRB_TEMPLATE *)(UINTN)((TrsTrb->Parameter1 | LShiftU64 ((UINT64)TrsTrb->Parameter2, 32)) & ~0x0F);
     }
   }
+
   ASSERT (Index != TrsRing->TrbNumber);
 
-  if ((EFI_PHYSICAL_ADDRESS)(UINTN) TrsTrb != TrsRing->RingEnqueue) {
-    TrsRing->RingEnqueue = (EFI_PHYSICAL_ADDRESS)(UINTN) TrsTrb;
+  if ((EFI_PHYSICAL_ADDRESS)(UINTN)TrsTrb != TrsRing->RingEnqueue) {
+    TrsRing->RingEnqueue = (EFI_PHYSICAL_ADDRESS)(UINTN)TrsTrb;
   }
 
   //
@@ -103,8 +105,8 @@ XhcSyncEventRing (
   IN EVENT_RING                *EvtRing
   )
 {
-  UINTN               Index;
-  TRB_TEMPLATE        *EvtTrb1;
+  UINTN         Index;
+  TRB_TEMPLATE  *EvtTrb1;
 
   ASSERT (EvtRing != NULL);
 
@@ -112,7 +114,7 @@ XhcSyncEventRing (
   // Calculate the EventRingEnqueue and EventRingCCS.
   // Note: only support single Segment
   //
-  EvtTrb1 = (TRB_TEMPLATE *)(UINTN) EvtRing->EventRingDequeue;
+  EvtTrb1 = (TRB_TEMPLATE *)(UINTN)EvtRing->EventRingDequeue;
 
   for (Index = 0; Index < EvtRing->TrbNumber; Index++) {
     if (EvtTrb1->CycleBit != EvtRing->EventRingCCS) {
@@ -121,8 +123,8 @@ XhcSyncEventRing (
 
     EvtTrb1++;
 
-    if ((UINTN)EvtTrb1 >= ((UINTN) EvtRing->EventRingSeg0 + sizeof (TRB_TEMPLATE) * EvtRing->TrbNumber)) {
-      EvtTrb1 = (TRB_TEMPLATE *)(UINTN) EvtRing->EventRingSeg0;
+    if ((UINTN)EvtTrb1 >= ((UINTN)EvtRing->EventRingSeg0 + sizeof (TRB_TEMPLATE) * EvtRing->TrbNumber)) {
+      EvtTrb1               = (TRB_TEMPLATE *)(UINTN)EvtRing->EventRingSeg0;
       EvtRing->EventRingCCS = (EvtRing->EventRingCCS) ? 0 : 1;
     }
   }
@@ -150,16 +152,16 @@ XhcSyncEventRing (
 EFI_STATUS
 EFIAPI
 XhcCheckNewEvent (
-  IN  USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN  EVENT_RING               *EvtRing,
-  OUT TRB_TEMPLATE             **NewEvtTrb
+  IN  USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN  EVENT_RING                *EvtRing,
+  OUT TRB_TEMPLATE              **NewEvtTrb
   )
 {
-  EFI_STATUS          Status;
+  EFI_STATUS  Status;
 
   ASSERT (EvtRing != NULL);
 
-  *NewEvtTrb = (TRB_TEMPLATE *)(UINTN) EvtRing->EventRingDequeue;
+  *NewEvtTrb = (TRB_TEMPLATE *)(UINTN)EvtRing->EventRingDequeue;
 
   if (EvtRing->EventRingDequeue == EvtRing->EventRingEnqueue) {
     return EFI_NOT_READY;
@@ -171,7 +173,7 @@ XhcCheckNewEvent (
   //
   // If the dequeue pointer is beyond the ring, then roll-back it to the begining of the ring.
   //
-  if ((UINTN)EvtRing->EventRingDequeue >= ((UINTN) EvtRing->EventRingSeg0 + sizeof (TRB_TEMPLATE) * EvtRing->TrbNumber)) {
+  if ((UINTN)EvtRing->EventRingDequeue >= ((UINTN)EvtRing->EventRingSeg0 + sizeof (TRB_TEMPLATE) * EvtRing->TrbNumber)) {
     EvtRing->EventRingDequeue = EvtRing->EventRingSeg0;
   }
 
@@ -190,16 +192,16 @@ XhcCheckNewEvent (
 **/
 BOOLEAN
 IsTransferRingTrb (
-  IN  TRB_TEMPLATE        *Trb,
-  IN  URB                 *Urb
+  IN  TRB_TEMPLATE  *Trb,
+  IN  URB           *Urb
   )
 {
-  TRB_TEMPLATE  *CheckedTrb;
-  TRANSFER_RING *Ring;
-  UINTN         Index;
+  TRB_TEMPLATE   *CheckedTrb;
+  TRANSFER_RING  *Ring;
+  UINTN          Index;
 
-  Ring = (TRANSFER_RING *)(UINTN) Urb->Ring;
-  CheckedTrb = (TRB_TEMPLATE *)(UINTN) Ring->RingSeg0;
+  Ring       = (TRANSFER_RING *)(UINTN)Urb->Ring;
+  CheckedTrb = (TRB_TEMPLATE *)(UINTN)Ring->RingSeg0;
 
   ASSERT (Ring->TrbNumber == CMD_RING_TRB_NUMBER || Ring->TrbNumber == TR_RING_TRB_NUMBER);
 
@@ -207,6 +209,7 @@ IsTransferRingTrb (
     if (Trb == CheckedTrb) {
       return TRUE;
     }
+
     CheckedTrb++;
   }
 
@@ -225,23 +228,23 @@ IsTransferRingTrb (
 **/
 EFI_STATUS
 XhcCheckUrbResult (
-  IN  USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN  URB                      *Urb
+  IN  USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN  URB                       *Urb
   )
 {
-  EVT_TRB_TRANSFER        *EvtTrb;
-  TRB_TEMPLATE            *TRBPtr;
-  UINTN                   Index;
-  UINT8                   TRBType;
-  EFI_STATUS              Status;
-  URB                     *CheckedUrb;
-  UINT64                  XhcDequeue;
-  UINT32                  High;
-  UINT32                  Low;
+  EVT_TRB_TRANSFER  *EvtTrb;
+  TRB_TEMPLATE      *TRBPtr;
+  UINTN             Index;
+  UINT8             TRBType;
+  EFI_STATUS        Status;
+  URB               *CheckedUrb;
+  UINT64            XhcDequeue;
+  UINT32            High;
+  UINT32            Low;
 
   ASSERT ((Xhc != NULL) && (Urb != NULL));
 
-  Status   = EFI_SUCCESS;
+  Status = EFI_SUCCESS;
 
   if (Urb->Finished) {
     goto EXIT;
@@ -262,6 +265,7 @@ XhcCheckUrbResult (
       //
       goto EXIT;
     }
+
     //
     // Only handle COMMAND_COMPLETETION_EVENT and TRANSFER_EVENT.
     //
@@ -269,7 +273,7 @@ XhcCheckUrbResult (
       continue;
     }
 
-    TRBPtr = (TRB_TEMPLATE *)(UINTN)(EvtTrb->TRBPtrLo | LShiftU64 ((UINT64) EvtTrb->TRBPtrHi, 32));
+    TRBPtr = (TRB_TEMPLATE *)(UINTN)(EvtTrb->TRBPtrLo | LShiftU64 ((UINT64)EvtTrb->TRBPtrHi, 32));
 
     //
     // Update the status of Urb according to the finished event regardless of whether
@@ -282,6 +286,7 @@ XhcCheckUrbResult (
     } else {
       continue;
     }
+
     switch (EvtTrb->Completecode) {
       case TRB_COMPLETION_STALL_ERROR:
         CheckedUrb->Result  |= EFI_USB_ERR_STALL;
@@ -308,10 +313,11 @@ XhcCheckUrbResult (
         if (EvtTrb->Completecode == TRB_COMPLETION_SHORT_PACKET) {
         }
 
-        TRBType = (UINT8) (TRBPtr->Type);
+        TRBType = (UINT8)(TRBPtr->Type);
         if ((TRBType == TRB_TYPE_DATA_STAGE) ||
             (TRBType == TRB_TYPE_NORMAL) ||
-            (TRBType == TRB_TYPE_ISOCH)) {
+            (TRBType == TRB_TYPE_ISOCH))
+        {
           CheckedUrb->Completed += (CheckedUrb->DataLen - EvtTrb->Length);
         }
 
@@ -327,18 +333,17 @@ XhcCheckUrbResult (
     // Only check first and end Trb event address
     //
 
-    if ((EFI_PHYSICAL_ADDRESS)(UINTN) TRBPtr == CheckedUrb->TrbStart) {
+    if ((EFI_PHYSICAL_ADDRESS)(UINTN)TRBPtr == CheckedUrb->TrbStart) {
       CheckedUrb->StartDone = TRUE;
     }
 
-    if ((EFI_PHYSICAL_ADDRESS)(UINTN) TRBPtr == CheckedUrb->TrbEnd) {
+    if ((EFI_PHYSICAL_ADDRESS)(UINTN)TRBPtr == CheckedUrb->TrbEnd) {
       CheckedUrb->EndDone = TRUE;
     }
 
     if (CheckedUrb->StartDone && CheckedUrb->EndDone) {
       CheckedUrb->Finished = TRUE;
     }
-
   }
 
 EXIT:
@@ -348,9 +353,9 @@ EXIT:
   // Some 3rd party XHCI external cards don't support single 64-bytes width register access,
   // So divide it to two 32-bytes width register access.
   //
-  Low  = XhcReadDebugReg (Xhc, XHC_DC_DCERDP);
-  High = XhcReadDebugReg (Xhc, XHC_DC_DCERDP + 4);
-  XhcDequeue = (UINT64)(LShiftU64((UINT64)High, 32) | Low);
+  Low        = XhcReadDebugReg (Xhc, XHC_DC_DCERDP);
+  High       = XhcReadDebugReg (Xhc, XHC_DC_DCERDP + 4);
+  XhcDequeue = (UINT64)(LShiftU64 ((UINT64)High, 32) | Low);
 
   if ((XhcDequeue & (~0x0F)) != ((UINT64)(UINTN)Xhc->EventRing.EventRingDequeue & (~0x0F))) {
     //
@@ -380,7 +385,7 @@ XhcRingDoorBell (
   IN URB                       *Urb
   )
 {
-  UINT32      Dcdb;
+  UINT32  Dcdb;
 
   //
   // 7.6.8.2 DCDB Register
@@ -414,25 +419,26 @@ XhcRingDoorBell (
 **/
 EFI_STATUS
 XhcExecTransfer (
-  IN  USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN  URB                      *Urb,
-  IN  UINTN                    Timeout
+  IN  USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN  URB                       *Urb,
+  IN  UINTN                     Timeout
   )
 {
-  EFI_STATUS              Status;
-  UINTN                   Index;
-  UINTN                   Loop;
-  TRB_TEMPLATE            *Trb;
-  TRANSFER_RING           *Ring;
-  TRB_TEMPLATE            *TrbStart;
-  TRB_TEMPLATE            *TrbEnd;
+  EFI_STATUS     Status;
+  UINTN          Index;
+  UINTN          Loop;
+  TRB_TEMPLATE   *Trb;
+  TRANSFER_RING  *Ring;
+  TRB_TEMPLATE   *TrbStart;
+  TRB_TEMPLATE   *TrbEnd;
 
   Status = EFI_SUCCESS;
 
-  Loop   = (Timeout * XHC_1_MILLISECOND / XHC_POLL_DELAY) + 1;
+  Loop = (Timeout * XHC_1_MILLISECOND / XHC_POLL_DELAY) + 1;
   if (Timeout == 0) {
     Loop = 0xFFFFFFFF;
   }
+
   XhcRingDoorBell (Xhc, Urb);
   //
   // DSCT BIT0: Event Ring Not Empty bit can only be set to 1 by XHC after ringing door bell with some delay.
@@ -443,8 +449,10 @@ XhcExecTransfer (
     if (Urb->Finished) {
       break;
     }
+
     MicroSecondDelay (XHC_POLL_DELAY);
   }
+
   if (Index == Loop) {
     Urb->Result = EFI_USB_ERR_TIMEOUT;
   }
@@ -456,18 +464,19 @@ XhcExecTransfer (
   // will be still here, next read TRB (B) will be put next to TRB (A), when host write then, the TRB (A)
   // will be used to contain data, not TRB(B), this will cause Finished flag will not be set and return error in this function.
   //
-  Ring = (TRANSFER_RING *)(UINTN) Urb->Ring;
+  Ring = (TRANSFER_RING *)(UINTN)Urb->Ring;
   if (Urb->Result != EFI_USB_NOERROR) {
     Ring->RingEnqueue = Urb->TrbStart;
     //
     // Clear CCS flag for next use
     //
-    TrbStart = (TRB_TEMPLATE *)(UINTN) Urb->TrbStart;
-    TrbEnd   = (TRB_TEMPLATE *)(UINTN) Urb->TrbEnd;
+    TrbStart = (TRB_TEMPLATE *)(UINTN)Urb->TrbStart;
+    TrbEnd   = (TRB_TEMPLATE *)(UINTN)Urb->TrbEnd;
     for (Trb = TrbStart; Trb <= TrbEnd; Trb++) {
       Trb->CycleBit = ((~Ring->RingPCS) & BIT0);
     }
   }
+
   return Status;
 }
 
@@ -482,15 +491,15 @@ XhcExecTransfer (
 **/
 EFI_STATUS
 XhcCreateTransferTrb (
-  IN USB3_DEBUG_PORT_INSTANCE   *Xhc,
-  IN URB                        *Urb
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN URB                       *Urb
   )
 {
-  TRANSFER_RING                 *EPRing;
-  TRB                           *TrbStart;
-  UINT32                        TotalLen;
-  UINT32                        Len;
-  UINT32                        TrbNum;
+  TRANSFER_RING  *EPRing;
+  TRB            *TrbStart;
+  UINT32         TotalLen;
+  UINT32         Len;
+  UINT32         TrbNum;
 
   Urb->Finished  = FALSE;
   Urb->StartDone = FALSE;
@@ -499,12 +508,12 @@ XhcCreateTransferTrb (
   Urb->Result    = EFI_USB_NOERROR;
 
   if (Urb->Direction == EfiUsbDataIn) {
-    EPRing    = &Xhc->TransferRingIn;
+    EPRing = &Xhc->TransferRingIn;
   } else {
-    EPRing    = &Xhc->TransferRingOut;
+    EPRing = &Xhc->TransferRingOut;
   }
 
-  Urb->Ring = (EFI_PHYSICAL_ADDRESS)(UINTN) EPRing;
+  Urb->Ring = (EFI_PHYSICAL_ADDRESS)(UINTN)EPRing;
   //
   // Construct the TRB for ED_BULK_OUT and ED_BULK_IN
   //
@@ -523,9 +532,10 @@ XhcCreateTransferTrb (
     } else {
       Len = 0x10000;
     }
-    TrbStart = (TRB *)(UINTN)EPRing->RingEnqueue;
-    TrbStart->TrbNormal.TRBPtrLo  = XHC_LOW_32BIT(Urb->Data + TotalLen);
-    TrbStart->TrbNormal.TRBPtrHi  = XHC_HIGH_32BIT(Urb->Data + TotalLen);
+
+    TrbStart                      = (TRB *)(UINTN)EPRing->RingEnqueue;
+    TrbStart->TrbNormal.TRBPtrLo  = XHC_LOW_32BIT (Urb->Data + TotalLen);
+    TrbStart->TrbNormal.TRBPtrHi  = XHC_HIGH_32BIT (Urb->Data + TotalLen);
     TrbStart->TrbNormal.Length    = Len;
     TrbStart->TrbNormal.TDSize    = 0;
     TrbStart->TrbNormal.IntTarget = 0;
@@ -548,7 +558,7 @@ XhcCreateTransferTrb (
   //
   // Update to the last TRB
   //
-  Urb->TrbEnd = (EFI_PHYSICAL_ADDRESS)(UINTN) TrbStart;
+  Urb->TrbEnd = (EFI_PHYSICAL_ADDRESS)(UINTN)TrbStart;
   return EFI_SUCCESS;
 }
 
@@ -563,17 +573,17 @@ XhcCreateTransferTrb (
   @return Created URB or NULL
 
 **/
-URB*
+URB *
 XhcCreateUrb (
-  IN USB3_DEBUG_PORT_INSTANCE           *Xhc,
-  IN EFI_USB_DATA_DIRECTION             Direction,
-  IN VOID                               *Data,
-  IN UINTN                              DataLen
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN EFI_USB_DATA_DIRECTION    Direction,
+  IN VOID                      *Data,
+  IN UINTN                     DataLen
   )
 {
-  EFI_STATUS                    Status;
-  URB                           *Urb;
-  EFI_PHYSICAL_ADDRESS          DataAddress;
+  EFI_STATUS            Status;
+  URB                   *Urb;
+  EFI_PHYSICAL_ADDRESS  DataAddress;
 
   Urb = &Xhc->Urb;
   ASSERT (Urb->Data != 0);
@@ -582,13 +592,13 @@ XhcCreateUrb (
 
   Urb->Signature = USB3_DEBUG_PORT_INSTANCE_SIGNATURE;
   Urb->Direction = Direction;
-  Urb->Data = DataAddress;
+  Urb->Data      = DataAddress;
 
-  ZeroMem ((VOID*)(UINTN) Urb->Data, DataLen);
-  CopyMem ((VOID*)(UINTN) Urb->Data, Data, DataLen);
+  ZeroMem ((VOID *)(UINTN)Urb->Data, DataLen);
+  CopyMem ((VOID *)(UINTN)Urb->Data, Data, DataLen);
 
-  Urb->DataLen  = (UINT32) DataLen;
-  Status = XhcCreateTransferTrb (Xhc, Urb);
+  Urb->DataLen = (UINT32)DataLen;
+  Status       = XhcCreateTransferTrb (Xhc, Urb);
   ASSERT_EFI_ERROR (Status);
 
   return Urb;
@@ -616,22 +626,23 @@ XhcCreateUrb (
 EFI_STATUS
 EFIAPI
 XhcDataTransfer (
-  IN     USB3_DEBUG_PORT_INSTANCE            *Xhc,
-  IN     EFI_USB_DATA_DIRECTION              Direction,
-  IN OUT VOID                                *Data,
-  IN OUT UINTN                               *DataLength,
-  IN     UINTN                               Timeout,
-  OUT    UINT32                              *TransferResult
+  IN     USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN     EFI_USB_DATA_DIRECTION    Direction,
+  IN OUT VOID                      *Data,
+  IN OUT UINTN                     *DataLength,
+  IN     UINTN                     Timeout,
+  OUT    UINT32                    *TransferResult
   )
 {
-  URB                     *Urb;
-  EFI_STATUS              Status;
+  URB         *Urb;
+  EFI_STATUS  Status;
 
   //
   // Validate the parameters
   //
   if ((DataLength == NULL) || (*DataLength == 0) ||
-      (Data == NULL) || (TransferResult == NULL)) {
+      (Data == NULL) || (TransferResult == NULL))
+  {
     return EFI_INVALID_PARAMETER;
   }
 
@@ -674,10 +685,10 @@ ON_EXIT:
 BOOLEAN
 EFIAPI
 Usb3DebugIsAddressInSmram (
-  IN EFI_PHYSICAL_ADDRESS   XhcMmioBase
+  IN EFI_PHYSICAL_ADDRESS  XhcMmioBase
   )
 {
-  UINTN                       Index;
+  UINTN  Index;
 
   if (mSmramCheckRangeCount == 0) {
     //
@@ -687,9 +698,10 @@ Usb3DebugIsAddressInSmram (
     return TRUE;
   }
 
-  for (Index = 0; Index < mSmramCheckRangeCount; Index ++) {
+  for (Index = 0; Index < mSmramCheckRangeCount; Index++) {
     if (((XhcMmioBase >= mSmramCheckRanges[Index].CpuStart) && (XhcMmioBase < mSmramCheckRanges[Index].CpuStart + mSmramCheckRanges[Index].PhysicalSize)) ||
-        ((mSmramCheckRanges[Index].CpuStart >= XhcMmioBase) && (mSmramCheckRanges[Index].CpuStart < XhcMmioBase + mUsb3MmioSize))) {
+        ((mSmramCheckRanges[Index].CpuStart >= XhcMmioBase) && (mSmramCheckRanges[Index].CpuStart < XhcMmioBase + mUsb3MmioSize)))
+    {
       return TRUE;
     }
   }
@@ -712,24 +724,24 @@ Usb3DebugPortDataTransfer (
   EFI_USB_DATA_DIRECTION  Direction
   )
 {
-  USB3_DEBUG_PORT_INSTANCE        *Instance;
-  EFI_PHYSICAL_ADDRESS            XhcMmioBase;
-  UINT16                          Command;
-  UINT8                           Bus;
-  UINT8                           Device;
-  UINT8                           Function;
-  UINT32                          TransferResult;
-  UINT32                          Dcctrl;
-  EFI_PHYSICAL_ADDRESS            UsbBase;
-  UINTN                           BytesToSend;
-  USB3_DEBUG_PORT_CONTROLLER      UsbDebugPort;
-  EFI_STATUS                      Status;
-  USB3_DEBUG_PORT_INSTANCE        UsbDbgInstance;
+  USB3_DEBUG_PORT_INSTANCE    *Instance;
+  EFI_PHYSICAL_ADDRESS        XhcMmioBase;
+  UINT16                      Command;
+  UINT8                       Bus;
+  UINT8                       Device;
+  UINT8                       Function;
+  UINT32                      TransferResult;
+  UINT32                      Dcctrl;
+  EFI_PHYSICAL_ADDRESS        UsbBase;
+  UINTN                       BytesToSend;
+  USB3_DEBUG_PORT_CONTROLLER  UsbDebugPort;
+  EFI_STATUS                  Status;
+  USB3_DEBUG_PORT_INSTANCE    UsbDbgInstance;
 
-  UsbDebugPort.Controller = GetUsb3DebugPortController();
-  Bus      = UsbDebugPort.PciAddress.Bus;
-  Device   = UsbDebugPort.PciAddress.Device;
-  Function = UsbDebugPort.PciAddress.Function;
+  UsbDebugPort.Controller = GetUsb3DebugPortController ();
+  Bus                     = UsbDebugPort.PciAddress.Bus;
+  Device                  = UsbDebugPort.PciAddress.Device;
+  Function                = UsbDebugPort.PciAddress.Function;
 
   //
   // MMIO base address is possible to clear, set it if it is cleared. (XhciMemorySpaceClose in PchUsbCommon.c)
@@ -741,11 +753,11 @@ Usb3DebugPortDataTransfer (
     //
     // XHCI device MMIO base is cleared by someone, set it again
     //
-    UsbBase  = PcdGet32 (PcdXhciDefaultBaseAddress);
-    PciWrite32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET), (UINT32)UsbBase);
-    PciWrite32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4), 0x0);
-    UsbBase = PciRead32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET)) & XHCI_BASE_ADDRESS_32_BIT_MASK;
-    if (UsbBase == 0 || UsbBase == XHCI_BASE_ADDRESS_32_BIT_MASK) {
+    UsbBase = PcdGet32 (PcdXhciDefaultBaseAddress);
+    PciWrite32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET), (UINT32)UsbBase);
+    PciWrite32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4), 0x0);
+    UsbBase = PciRead32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET)) & XHCI_BASE_ADDRESS_32_BIT_MASK;
+    if ((UsbBase == 0) || (UsbBase == XHCI_BASE_ADDRESS_32_BIT_MASK)) {
       return;
     }
   }
@@ -761,8 +773,8 @@ Usb3DebugPortDataTransfer (
   // Save and set Command Register
   //
   if (((Command & EFI_PCI_COMMAND_MEMORY_SPACE) == 0) || ((Command & EFI_PCI_COMMAND_BUS_MASTER) == 0)) {
-    PciWrite16(PCI_LIB_ADDRESS(Bus, Device, Function, PCI_COMMAND_OFFSET), Command | EFI_PCI_COMMAND_MEMORY_SPACE | EFI_PCI_COMMAND_BUS_MASTER);
-    PciRead16(PCI_LIB_ADDRESS(Bus, Device, Function, PCI_COMMAND_OFFSET));
+    PciWrite16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command | EFI_PCI_COMMAND_MEMORY_SPACE | EFI_PCI_COMMAND_BUS_MASTER);
+    PciRead16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET));
   }
 
   Instance = GetUsb3DebugPortInstance ();
@@ -804,6 +816,7 @@ Usb3DebugPortDataTransfer (
         goto Done;
       }
     }
+
     Status = USB3InitializeReal ();
     if (EFI_ERROR (Status)) {
       //
@@ -846,16 +859,16 @@ Usb3DebugPortDataTransfer (
     if (TransferResult != EFI_USB_NOERROR) {
       break;
     }
+
     *Length -= BytesToSend;
-    Data += BytesToSend;
+    Data    += BytesToSend;
   }
 
 Done:
   //
   // Restore Command Register
   //
-  PciWrite16(PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command);
-
+  PciWrite16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command);
 }
 
 /**
@@ -867,8 +880,8 @@ Done:
 **/
 RETURN_STATUS
 Usb3DbgIn (
-      OUT UINT8                           *Data,
-  IN  OUT UINTN                           *Length
+  OUT UINT8      *Data,
+  IN  OUT UINTN  *Length
   )
 {
   Usb3DebugPortDataTransfer (Data, Length, EfiUsbDataIn);
@@ -884,8 +897,8 @@ Usb3DbgIn (
 **/
 VOID
 Usb3DbgOut (
-  OUT      UINT8                           *Data,
-  IN OUT   UINTN                           *Length
+  OUT      UINT8  *Data,
+  IN OUT   UINTN  *Length
   )
 {
   Usb3DebugPortDataTransfer (Data, Length, EfiUsbDataOut);

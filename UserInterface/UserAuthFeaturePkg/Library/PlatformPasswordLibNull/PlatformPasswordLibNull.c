@@ -9,7 +9,7 @@
 
 **/
 
-BOOLEAN       mPasswordCleared      = FALSE;
+BOOLEAN  mPasswordCleared = FALSE;
 
 /**
   This function is called at password driver entrypoint.
@@ -53,7 +53,6 @@ NeedEnrollPassword (
   return FALSE;
 }
 
-
 /**
   Save password clear state from a PCD to mPasswordCleared.
 
@@ -70,9 +69,7 @@ PlatformPasswordLibNullConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-
-  mPasswordCleared = PcdGetBool(PcdPasswordCleared);
+  mPasswordCleared = PcdGetBool (PcdPasswordCleared);
 
   return EFI_SUCCESS;
 }
-

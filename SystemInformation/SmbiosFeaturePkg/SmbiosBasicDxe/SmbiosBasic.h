@@ -37,9 +37,9 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 EFI_STATUS
 AddSmbiosRecord (
-  IN EFI_SMBIOS_PROTOCOL        *Smbios,
-  OUT EFI_SMBIOS_HANDLE         *SmbiosHandle,
-  IN EFI_SMBIOS_TABLE_HEADER    *Record
+  IN EFI_SMBIOS_PROTOCOL      *Smbios,
+  OUT EFI_SMBIOS_HANDLE       *SmbiosHandle,
+  IN EFI_SMBIOS_TABLE_HEADER  *Record
   );
 
 #endif

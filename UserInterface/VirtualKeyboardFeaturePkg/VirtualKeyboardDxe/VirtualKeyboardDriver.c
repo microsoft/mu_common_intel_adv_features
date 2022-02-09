@@ -8,9 +8,10 @@
 
 #include "VirtualKeyboard.h"
 
-UINT32         mOrigConOutRow      = 0;
-UINT32         mOrigSetupConOutRow = 0;
-EFI_HII_HANDLE mHiiHandle          = NULL;
+UINT32          mOrigConOutRow      = 0;
+UINT32          mOrigSetupConOutRow = 0;
+EFI_HII_HANDLE  mHiiHandle          = NULL;
+
 /**
   Verify the controller type
 
@@ -30,9 +31,9 @@ EFI_HII_HANDLE mHiiHandle          = NULL;
 EFI_STATUS
 EFIAPI
 VirtualKeyboardDriverSupported (
-  IN EFI_DRIVER_BINDING_PROTOCOL *This,
-  IN EFI_HANDLE                  Controller,
-  IN EFI_DEVICE_PATH_PROTOCOL    *RemainingDevicePath
+  IN EFI_DRIVER_BINDING_PROTOCOL  *This,
+  IN EFI_HANDLE                   Controller,
+  IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath
   )
 {
   EFI_GRAPHICS_OUTPUT_PROTOCOL  *GraphicsOutput;
@@ -131,14 +132,14 @@ End:
 EFI_STATUS
 EFIAPI
 VirtualKeyboardDriverStart (
-  IN EFI_DRIVER_BINDING_PROTOCOL *This,
-  IN EFI_HANDLE                  Controller,
-  IN EFI_DEVICE_PATH_PROTOCOL    *RemainingDevicePath
+  IN EFI_DRIVER_BINDING_PROTOCOL  *This,
+  IN EFI_HANDLE                   Controller,
+  IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath
   )
 {
-  VK_CONTEXT *VkContext;
-  EFI_STATUS Status;
-  EFI_STATUS PcdStatus;     // MU_CHANGE - TCBZ3039 Capture the Status of the PCD Sets.
+  VK_CONTEXT  *VkContext;
+  EFI_STATUS  Status;
+  EFI_STATUS  PcdStatus;    // MU_CHANGE - TCBZ3039 Capture the Status of the PCD Sets.
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_INFO, "VirtualKeyboardDriverStart Start\n"));
 
@@ -153,7 +154,7 @@ VirtualKeyboardDriverStart (
   Status = gBS->OpenProtocol (
                   Controller,
                   &gEfiAbsolutePointerProtocolGuid,
-                  (VOID**) &VkContext->AbsolutePointer,
+                  (VOID **)&VkContext->AbsolutePointer,
                   This->DriverBindingHandle,
                   Controller,
                   EFI_OPEN_PROTOCOL_BY_DRIVER
@@ -179,7 +180,7 @@ VirtualKeyboardDriverStart (
   Status = gBS->HandleProtocol (
                   gST->ConsoleOutHandle,
                   &gEfiGraphicsOutputProtocolGuid,
-                  (VOID**) &VkContext->GraphicsOutput
+                  (VOID **)&VkContext->GraphicsOutput
                   );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_ERROR, "ERROR - Graphics output protocol not available, Status: %r\n", Status));
@@ -187,7 +188,7 @@ VirtualKeyboardDriverStart (
   }
 
   VkContext->HiiHandle = mHiiHandle;
-  Status = VkApiStart (VkContext, Controller);
+  Status               = VkApiStart (VkContext, Controller);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_ERROR, "ERROR - Failed to VkApiStart, Status: %r\n", Status));
     goto Error;
@@ -265,21 +266,21 @@ End:
 EFI_STATUS
 EFIAPI
 VirtualKeyboardDriverStop (
-  IN  EFI_DRIVER_BINDING_PROTOCOL *This,
-  IN  EFI_HANDLE                  Controller,
-  IN  UINTN                       NumberOfChildren,
-  IN  EFI_HANDLE                  *ChildHandleBuffer
+  IN  EFI_DRIVER_BINDING_PROTOCOL  *This,
+  IN  EFI_HANDLE                   Controller,
+  IN  UINTN                        NumberOfChildren,
+  IN  EFI_HANDLE                   *ChildHandleBuffer
   )
 {
-  VK_CONTEXT                          *VkContext;
-  EFI_STATUS                          Status;
+  VK_CONTEXT  *VkContext;
+  EFI_STATUS  Status;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VirtualKeyboardDriverStop Start\n"));
 
   Status = gBS->OpenProtocol (
                   Controller,
                   &gEfiCallerIdGuid,
-                  (VOID**)&VkContext,
+                  (VOID **)&VkContext,
                   This->DriverBindingHandle,
                   Controller,
                   EFI_OPEN_PROTOCOL_BY_DRIVER | EFI_OPEN_PROTOCOL_EXCLUSIVE
@@ -389,13 +390,13 @@ End:
 EFI_STATUS
 EFIAPI
 VirtualKeyboardDriverUnload (
-  IN EFI_HANDLE ImageHandle
+  IN EFI_HANDLE  ImageHandle
   )
 {
-  EFI_STATUS                 Status;
-  EFI_HANDLE                 *HandleBuffer;
-  UINTN                      HandleCount;
-  UINTN                      Index;
+  EFI_STATUS  Status;
+  EFI_HANDLE  *HandleBuffer;
+  UINTN       HandleCount;
+  UINTN       Index;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VirtualKeyboardDriverUnload Start\n"));
 
@@ -460,7 +461,7 @@ End:
   return Status;
 }
 
-EFI_DRIVER_BINDING_PROTOCOL gVirtualKeyboardDriverBinding = {
+EFI_DRIVER_BINDING_PROTOCOL  gVirtualKeyboardDriverBinding = {
   VirtualKeyboardDriverSupported,
   VirtualKeyboardDriverStart,
   VirtualKeyboardDriverStop,
@@ -484,11 +485,11 @@ EFI_DRIVER_BINDING_PROTOCOL gVirtualKeyboardDriverBinding = {
 EFI_STATUS
 EFIAPI
 VirtualKeyboardDriverEntryPoint (
-  IN EFI_HANDLE       ImageHandle,
-  IN EFI_SYSTEM_TABLE *SystemTable
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  EFI_STATUS                     Status;
+  EFI_STATUS  Status;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VirtualKeyboardDriverEntryPoint Start\n"));
   //

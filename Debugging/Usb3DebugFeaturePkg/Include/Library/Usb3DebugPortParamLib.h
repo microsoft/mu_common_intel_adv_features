@@ -10,14 +10,14 @@
 #define __USB3_DEBUG_PORT_PARAMETER_LIB__
 
 typedef struct {
-  UINT8  Function;
-  UINT8  Device;
-  UINT8  Bus;
+  UINT8    Function;
+  UINT8    Device;
+  UINT8    Bus;
 } PCI_ADDRESS;
 
 typedef union {
-  UINT32       Controller;
-  PCI_ADDRESS  PciAddress;
+  UINT32         Controller;
+  PCI_ADDRESS    PciAddress;
 } USB3_DEBUG_PORT_CONTROLLER;
 
 /**
@@ -50,7 +50,7 @@ GetUsb3DebugPortController (
 BOOLEAN
 EFIAPI
 SetUsb3DebugPortController (
-  UINT32        Controller
+  UINT32  Controller
   );
 
 #endif

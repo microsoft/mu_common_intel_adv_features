@@ -21,7 +21,7 @@
 #include <Ppi/IoMmu.h>
 #include "Usb3DebugPortLibInternal.h"
 
-GUID                      gUsb3DbgGuid =  USB3_DBG_GUID;
+GUID  gUsb3DbgGuid =  USB3_DBG_GUID;
 
 /**
   USB3 IOMMU PPI notify.
@@ -41,7 +41,7 @@ Usb3IoMmuPpiNotify (
   IN VOID                       *Ppi
   )
 {
-  USB3_DEBUG_PORT_INSTANCE      *Instance;
+  USB3_DEBUG_PORT_INSTANCE  *Instance;
 
   Instance = GetUsb3DebugPortInstance ();
   ASSERT (Instance != NULL);
@@ -55,7 +55,7 @@ Usb3IoMmuPpiNotify (
   return EFI_SUCCESS;
 }
 
-EFI_PEI_NOTIFY_DESCRIPTOR mUsb3IoMmuPpiNotifyDesc = {
+EFI_PEI_NOTIFY_DESCRIPTOR  mUsb3IoMmuPpiNotifyDesc = {
   (EFI_PEI_PPI_DESCRIPTOR_NOTIFY_CALLBACK | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST),
   &gEdkiiIoMmuPpiGuid,
   Usb3IoMmuPpiNotify
@@ -89,12 +89,12 @@ IoMmuAllocateBuffer (
   OUT VOID                  **Mapping
   )
 {
-  EFI_STATUS            Status;
-  UINTN                 NumberOfBytes;
+  EFI_STATUS  Status;
+  UINTN       NumberOfBytes;
 
-  *HostAddress = NULL;
+  *HostAddress   = NULL;
   *DeviceAddress = 0;
-  *Mapping = NULL;
+  *Mapping       = NULL;
 
   Status = IoMmu->AllocateBuffer (
                     IoMmu,
@@ -108,19 +108,20 @@ IoMmuAllocateBuffer (
   }
 
   NumberOfBytes = EFI_PAGES_TO_SIZE (Pages);
-  Status = IoMmu->Map (
-                    IoMmu,
-                    EdkiiIoMmuOperationBusMasterCommonBuffer,
-                    *HostAddress,
-                    &NumberOfBytes,
-                    DeviceAddress,
-                    Mapping
-                    );
+  Status        = IoMmu->Map (
+                           IoMmu,
+                           EdkiiIoMmuOperationBusMasterCommonBuffer,
+                           *HostAddress,
+                           &NumberOfBytes,
+                           DeviceAddress,
+                           Mapping
+                           );
   if (EFI_ERROR (Status)) {
     IoMmu->FreeBuffer (IoMmu, Pages, *HostAddress);
     *HostAddress = NULL;
     return EFI_OUT_OF_RESOURCES;
   }
+
   Status = IoMmu->SetAttribute (
                     IoMmu,
                     *Mapping,
@@ -129,7 +130,7 @@ IoMmuAllocateBuffer (
   if (EFI_ERROR (Status)) {
     IoMmu->Unmap (IoMmu, *Mapping);
     IoMmu->FreeBuffer (IoMmu, Pages, *HostAddress);
-    *Mapping = NULL;
+    *Mapping     = NULL;
     *HostAddress = NULL;
     return Status;
   }
@@ -148,19 +149,19 @@ Usb3GetIoMmu (
   VOID
   )
 {
-  EFI_STATUS                Status;
-  EDKII_IOMMU_PPI           *IoMmu;
-  CONST EFI_PEI_SERVICES    **PeiServices;
+  EFI_STATUS              Status;
+  EDKII_IOMMU_PPI         *IoMmu;
+  CONST EFI_PEI_SERVICES  **PeiServices;
 
   PeiServices = GetPeiServicesTablePointer ();
 
-  IoMmu = NULL;
+  IoMmu  = NULL;
   Status = (*PeiServices)->LocatePpi (
                              PeiServices,
                              &gEdkiiIoMmuPpiGuid,
                              0,
                              NULL,
-                             (VOID **) &IoMmu
+                             (VOID **)&IoMmu
                              );
   if (!EFI_ERROR (Status) && (IoMmu != NULL)) {
     return IoMmu;
@@ -181,18 +182,18 @@ GetXhciBaseAddress (
   UINT8                       Bus;
   UINT8                       Device;
   UINT8                       Function;
-  USB3_DEBUG_PORT_CONTROLLER   UsbDebugPort;
+  USB3_DEBUG_PORT_CONTROLLER  UsbDebugPort;
   EFI_PHYSICAL_ADDRESS        Address;
   UINT32                      Low;
   UINT32                      High;
 
-  UsbDebugPort.Controller = GetUsb3DebugPortController();
-  Bus = UsbDebugPort.PciAddress.Bus;
-  Device = UsbDebugPort.PciAddress.Device;
-  Function = UsbDebugPort.PciAddress.Function;
-  Low = PciRead32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET));
-  High = PciRead32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4));
-  Address = (EFI_PHYSICAL_ADDRESS) (LShiftU64 ((UINT64) High, 32) | Low);
+  UsbDebugPort.Controller = GetUsb3DebugPortController ();
+  Bus                     = UsbDebugPort.PciAddress.Bus;
+  Device                  = UsbDebugPort.PciAddress.Device;
+  Function                = UsbDebugPort.PciAddress.Function;
+  Low                     = PciRead32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET));
+  High                    = PciRead32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4));
+  Address                 = (EFI_PHYSICAL_ADDRESS)(LShiftU64 ((UINT64)High, 32) | Low);
 
   //
   // Mask other parts which are not part of base address
@@ -210,14 +211,15 @@ GetUsb3DebugPortInstance (
   VOID
   )
 {
-  USB3_DEBUG_PORT_INSTANCE               *Instance;
-  EFI_PEI_HOB_POINTERS                   Hob;
-  EFI_PHYSICAL_ADDRESS                   XhcMmioBase;
+  USB3_DEBUG_PORT_INSTANCE  *Instance;
+  EFI_PEI_HOB_POINTERS      Hob;
+  EFI_PHYSICAL_ADDRESS      XhcMmioBase;
 
   Hob.Raw = GetFirstGuidHob (&gUsb3DbgGuid);
   if (Hob.Raw == NULL) {
     return NULL;
   }
+
   Instance = GET_GUID_HOB_DATA (Hob.Guid);
 
   //
@@ -281,7 +283,7 @@ USB3InitializeReal (
   //
   // Initialize USB debug for PEI at the first time
   //
-  SetMem (&UsbDbg, sizeof(UsbDbg), 0);
+  SetMem (&UsbDbg, sizeof (UsbDbg), 0);
   UsbDbg.FromHob = TRUE;
   DiscoverUsb3DebugPort (&UsbDbg);
   if (UsbDbg.DebugSupport) {
@@ -298,12 +300,12 @@ USB3InitializeReal (
   //
   DataPtr = BuildGuidDataHob (
               &gUsb3DbgGuid,
-              (VOID*) &UsbDbg,
+              (VOID *)&UsbDbg,
               sizeof (UsbDbg)
               );
 
   if (UsbDbg.DebugSupport) {
-    SaveUsb3InstanceAddress ((USB3_DEBUG_PORT_INSTANCE *) DataPtr);
+    SaveUsb3InstanceAddress ((USB3_DEBUG_PORT_INSTANCE *)DataPtr);
   }
 
   return RETURN_SUCCESS;
@@ -317,21 +319,21 @@ USB3InitializeReal (
   @return A pointer to the allocated buffer or NULL if allocation fails.
 
 **/
-VOID*
+VOID *
 AllocateAlignBuffer (
-  IN UINTN                    BufferSize
+  IN UINTN  BufferSize
   )
 {
-  VOID                     *Buf;
-  EFI_PHYSICAL_ADDRESS     Address;
-  CONST EFI_PEI_SERVICES   **PeiServices;
-  EFI_STATUS               Status;
-  VOID                     *MemoryDiscoveredPpi;
-  EDKII_IOMMU_PPI          *IoMmu;
-  VOID                     *HostAddress;
-  VOID                     *Mapping;
+  VOID                    *Buf;
+  EFI_PHYSICAL_ADDRESS    Address;
+  CONST EFI_PEI_SERVICES  **PeiServices;
+  EFI_STATUS              Status;
+  VOID                    *MemoryDiscoveredPpi;
+  EDKII_IOMMU_PPI         *IoMmu;
+  VOID                    *HostAddress;
+  VOID                    *Mapping;
 
-  Buf = NULL;
+  Buf         = NULL;
   PeiServices = GetPeiServicesTablePointer ();
 
   //
@@ -342,7 +344,7 @@ AllocateAlignBuffer (
                              &gEfiPeiMemoryDiscoveredPpiGuid,
                              0,
                              NULL,
-                             (VOID **) &MemoryDiscoveredPpi
+                             (VOID **)&MemoryDiscoveredPpi
                              );
   if (!EFI_ERROR (Status)) {
     IoMmu = Usb3GetIoMmu ();
@@ -355,8 +357,8 @@ AllocateAlignBuffer (
                  &Mapping
                  );
       if (!EFI_ERROR (Status)) {
-        ASSERT (Address == ((EFI_PHYSICAL_ADDRESS) (UINTN) HostAddress));
-        Buf = (VOID *)(UINTN) Address;
+        ASSERT (Address == ((EFI_PHYSICAL_ADDRESS)(UINTN)HostAddress));
+        Buf = (VOID *)(UINTN)Address;
       }
     } else {
       Status = (*PeiServices)->AllocatePages (
@@ -366,10 +368,11 @@ AllocateAlignBuffer (
                                  &Address
                                  );
       if (!EFI_ERROR (Status)) {
-        Buf = (VOID *)(UINTN) Address;
+        Buf = (VOID *)(UINTN)Address;
       }
     }
   }
+
   return Buf;
 }
 
@@ -385,11 +388,11 @@ IsAllocatePagesReady (
   VOID
   )
 {
-  CONST EFI_PEI_SERVICES   **PeiServices;
-  EFI_STATUS               Status;
-  VOID                     *MemoryDiscoveredPpi;
-  EDKII_IOMMU_PPI          *IoMmu;
-  VOID                     *HostAddress;
+  CONST EFI_PEI_SERVICES  **PeiServices;
+  EFI_STATUS              Status;
+  VOID                    *MemoryDiscoveredPpi;
+  EDKII_IOMMU_PPI         *IoMmu;
+  VOID                    *HostAddress;
 
   PeiServices = GetPeiServicesTablePointer ();
 
@@ -401,7 +404,7 @@ IsAllocatePagesReady (
                              &gEfiPeiMemoryDiscoveredPpiGuid,
                              0,
                              NULL,
-                             (VOID **) &MemoryDiscoveredPpi
+                             (VOID **)&MemoryDiscoveredPpi
                              );
   if (!EFI_ERROR (Status)) {
     Status = (*PeiServices)->LocatePpi (
@@ -409,7 +412,7 @@ IsAllocatePagesReady (
                                &gEdkiiIoMmuPpiGuid,
                                0,
                                NULL,
-                               (VOID **) &IoMmu
+                               (VOID **)&IoMmu
                                );
     if (!EFI_ERROR (Status)) {
       Status = IoMmu->AllocateBuffer (
@@ -426,15 +429,16 @@ IsAllocatePagesReady (
         //
         return FALSE;
       }
+
       IoMmu->FreeBuffer (
                IoMmu,
                1,
                HostAddress
                );
     }
+
     return TRUE;
   }
 
   return FALSE;
 }
-

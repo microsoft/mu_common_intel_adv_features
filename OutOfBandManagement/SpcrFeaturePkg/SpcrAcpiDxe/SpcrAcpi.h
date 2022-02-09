@@ -10,10 +10,9 @@
 #ifndef _SPCR_ACPI_H_
 #define _SPCR_ACPI_H_
 
-
 #include <IndustryStandard/Acpi30.h>
 #include <IndustryStandard/SerialPortConsoleRedirectionTable.h>
-//#include <Guid/GlobalVariable.h>
+// #include <Guid/GlobalVariable.h>
 
 #include <Library/UefiLib.h>
 #include <Library/UefiBootServicesTableLib.h>
@@ -36,8 +35,8 @@
 /// HII specific Vendor Device Path definition.
 ///
 typedef struct {
-  VENDOR_DEVICE_PATH             VendorDevicePath;
-  EFI_DEVICE_PATH_PROTOCOL       End;
+  VENDOR_DEVICE_PATH          VendorDevicePath;
+  EFI_DEVICE_PATH_PROTOCOL    End;
 } HII_VENDOR_DEVICE_PATH;
 
 #pragma pack()
@@ -60,8 +59,8 @@ typedef struct {
 EFI_STATUS
 EFIAPI
 SpcrInitialize (
-  IN EFI_HANDLE                            ImageHandle,
-  IN EFI_SYSTEM_TABLE                      *SystemTable
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
   );
 
 /**
@@ -75,7 +74,8 @@ SpcrInitialize (
 VOID
 EFIAPI
 OutOfBandACPITableConstruction (
-  IN EFI_EVENT        Event,
-  IN VOID             *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   );
+
 #endif
