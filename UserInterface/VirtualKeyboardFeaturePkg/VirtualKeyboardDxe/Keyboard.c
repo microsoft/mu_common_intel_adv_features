@@ -21,19 +21,19 @@
 EFI_STATUS
 EFIAPI
 VkNotifyKeyCallback (
-  IN EFI_KEY_DATA *KeyData
+  IN EFI_KEY_DATA  *KeyData
   )
 {
-  EFI_STATUS Status;
-  VK_CONTEXT *VkContext;
-  UINTN      MaxColumn;
-  UINTN      MaxRow;
-  UINT32     HorizontalPixel;
-  UINT32     VerticalPixel;
+  EFI_STATUS  Status;
+  VK_CONTEXT  *VkContext;
+  UINTN       MaxColumn;
+  UINTN       MaxRow;
+  UINT32      HorizontalPixel;
+  UINT32      VerticalPixel;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkNotifyKeyCallback Start\n"));
 
-  Status = gBS->LocateProtocol (&gEfiCallerIdGuid, NULL, (VOID **) &VkContext);
+  Status = gBS->LocateProtocol (&gEfiCallerIdGuid, NULL, (VOID **)&VkContext);
   if (EFI_ERROR (Status)) {
     return Status;
   }
@@ -51,10 +51,12 @@ VkNotifyKeyCallback (
   // CursorRow and CursorColumn are started from 0, so need to add 2 not 1.
   //
   if (((UINTN)(gST->ConOut->Mode->CursorColumn * EFI_GLYPH_WIDTH) < VkContext->SimIconBackWidth) &&
-      ((UINTN)((gST->ConOut->Mode->CursorRow + 2) * EFI_GLYPH_HEIGHT) > (VerticalPixel - VkContext->SimIconBackHeight))) {
+      ((UINTN)((gST->ConOut->Mode->CursorRow + 2) * EFI_GLYPH_HEIGHT) > (VerticalPixel - VkContext->SimIconBackHeight)))
+  {
     SaveVkIconBackgroundBltBuffer (VkContext, VkDisplayAttributeSimpleBottom);
   } else if (((UINTN)((gST->ConOut->Mode->CursorColumn + 2) * EFI_GLYPH_WIDTH) > (HorizontalPixel - VkContext->FullIconBackWidth)) &&
-             ((UINTN)((gST->ConOut->Mode->CursorRow + 2) * EFI_GLYPH_HEIGHT) > (VerticalPixel - VkContext->FullIconBackHeight))){
+             ((UINTN)((gST->ConOut->Mode->CursorRow + 2) * EFI_GLYPH_HEIGHT) > (VerticalPixel - VkContext->FullIconBackHeight)))
+  {
     SaveVkIconBackgroundBltBuffer (VkContext, VkDisplayAttributeFullBottom);
   }
 
@@ -63,8 +65,9 @@ VkNotifyKeyCallback (
   //
   if ((KeyData->Key.UnicodeChar         == CHAR_CARRIAGE_RETURN)    ||
       (KeyData->Key.ScanCode            == SCAN_ESC)                ||
-      ((gST->ConOut->Mode->CursorColumn >= (INT32) (MaxColumn - 2)) &&
-       (gST->ConOut->Mode->CursorRow    == (INT32) (MaxRow - 1)))) {
+      ((gST->ConOut->Mode->CursorColumn >= (INT32)(MaxColumn - 2)) &&
+       (gST->ConOut->Mode->CursorRow    == (INT32)(MaxRow - 1))))
+  {
     HideVkBody (VkContext);
     HideVkIcon (VkContext);
     VkContext->IconReDrawCheck = 0;
@@ -95,19 +98,23 @@ IsKeyRegistered (
   ASSERT (RegsiteredData != NULL && InputData != NULL);
 
   if ((RegsiteredData->Key.ScanCode    != InputData->Key.ScanCode) ||
-      (RegsiteredData->Key.UnicodeChar != InputData->Key.UnicodeChar)) {
+      (RegsiteredData->Key.UnicodeChar != InputData->Key.UnicodeChar))
+  {
     return FALSE;
   }
 
   //
   // Assume KeyShiftState/KeyToggleState = 0 in Registered key data means these state could be ignored.
   //
-  if (RegsiteredData->KeyState.KeyShiftState != 0 &&
-      RegsiteredData->KeyState.KeyShiftState != InputData->KeyState.KeyShiftState) {
+  if ((RegsiteredData->KeyState.KeyShiftState != 0) &&
+      (RegsiteredData->KeyState.KeyShiftState != InputData->KeyState.KeyShiftState))
+  {
     return FALSE;
   }
-  if (RegsiteredData->KeyState.KeyToggleState != 0 &&
-      RegsiteredData->KeyState.KeyToggleState != InputData->KeyState.KeyToggleState) {
+
+  if ((RegsiteredData->KeyState.KeyToggleState != 0) &&
+      (RegsiteredData->KeyState.KeyToggleState != InputData->KeyState.KeyToggleState))
+  {
     return FALSE;
   }
 
@@ -127,13 +134,13 @@ IsKeyRegistered (
 **/
 EFI_STATUS
 VkPopTheKey (
-  IN OUT VK_CONTEXT   *VkContext,
-     OUT EFI_KEY_DATA *KeyData OPTIONAL
+  IN OUT VK_CONTEXT  *VkContext,
+  OUT EFI_KEY_DATA   *KeyData OPTIONAL
   )
 {
-  EFI_STATUS Status;
-  UINT8      IndexSt;
-  UINT8      IndexEd;
+  EFI_STATUS  Status;
+  UINT8       IndexSt;
+  UINT8       IndexEd;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkPopTheKey Start\n"));
   //
@@ -162,6 +169,7 @@ VkPopTheKey (
   if (KeyData != NULL) {
     *KeyData = VkContext->Keybuffer[IndexSt];
   }
+
   VkContext->KeyStartIndex = ++IndexSt % MAX_KEY_BUF_SIZE;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkPopTheKey Success, Status: %r\n", Status));
@@ -186,16 +194,16 @@ End:
 **/
 EFI_STATUS
 VkPushTheKey (
-  IN OUT VK_CONTEXT *VkContext,
-  IN     UINT16     Unicode
+  IN OUT VK_CONTEXT  *VkContext,
+  IN     UINT16      Unicode
   )
 {
-  UINT8        IndexSt;
-  UINT8        IndexEd;
-  EFI_KEY_DATA KeyData;
-  EFI_STATUS   Status;
-  LIST_ENTRY   *Link;
-  VK_NOTIFY    *CurrentNotify;
+  UINT8         IndexSt;
+  UINT8         IndexEd;
+  EFI_KEY_DATA  KeyData;
+  EFI_STATUS    Status;
+  LIST_ENTRY    *Link;
+  VK_NOTIFY     *CurrentNotify;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkPushTheKey Start\n"));
   //
@@ -215,7 +223,8 @@ VkPushTheKey (
   // Check Keyboard Buffer if is full that will pop the first key
   //
   if (VkContext->IsSupportPartialKey &&
-    ((VkContext->KeyEndIndex + 2) % MAX_KEY_BUF_SIZE) == IndexSt) {
+      (((VkContext->KeyEndIndex + 2) % MAX_KEY_BUF_SIZE) == IndexSt))
+  {
     VkPopTheKey (VkContext, NULL);
   }
 
@@ -231,54 +240,58 @@ VkPushTheKey (
   KeyData.KeyState.KeyToggleState |= VkContext->IsCapsLockFlag ? EFI_CAPS_LOCK_ACTIVE : 0;
 
   switch (Unicode) {
-  case VkKeyShift:
-    VkContext->IsShiftKeyFlag = !VkContext->IsShiftKeyFlag;
-    if (VkContext->PageNumber >= VkPage2 && VkContext->PageNumber <= VkPage3) {
-      VkContext->IsShiftKeyFlag ? VkContext->PageNumber++ : VkContext->PageNumber--;
-    }
-    VkContext->IsRedrawUpdateUI = TRUE;
-    break;
+    case VkKeyShift:
+      VkContext->IsShiftKeyFlag = !VkContext->IsShiftKeyFlag;
+      if ((VkContext->PageNumber >= VkPage2) && (VkContext->PageNumber <= VkPage3)) {
+        VkContext->IsShiftKeyFlag ? VkContext->PageNumber++ : VkContext->PageNumber--;
+      }
 
-  case VkKeyTwoPage:
-    switch (VkContext->PageNumber) {
-    case VkPage0:
-    case VkPage1:
-      VkContext->IsShiftKeyFlag = FALSE;
-      VkContext->PageNumber     = VkContext->IsShiftKeyFlag ? VkPage3 : VkPage2;
+      VkContext->IsRedrawUpdateUI = TRUE;
       break;
 
-    case VkPage2:
-    case VkPage3:
-      VkContext->IsShiftKeyFlag = FALSE;
-      VkContext->PageNumber     = VkContext->IsCapsLockFlag ? VkPage1 : VkPage0;
+    case VkKeyTwoPage:
+      switch (VkContext->PageNumber) {
+        case VkPage0:
+        case VkPage1:
+          VkContext->IsShiftKeyFlag = FALSE;
+          VkContext->PageNumber     = VkContext->IsShiftKeyFlag ? VkPage3 : VkPage2;
+          break;
+
+        case VkPage2:
+        case VkPage3:
+          VkContext->IsShiftKeyFlag = FALSE;
+          VkContext->PageNumber     = VkContext->IsCapsLockFlag ? VkPage1 : VkPage0;
+          break;
+
+        default:
+          break;
+      }
+
+      VkContext->IsRedrawUpdateUI = TRUE;
+      break;
+
+    case VkKeyCapslock:
+      VkContext->IsCapsLockFlag = !VkContext->IsCapsLockFlag;
+      if ((VkContext->PageNumber >= VkPage0) && (VkContext->PageNumber <= VkPage1)) {
+        VkContext->IsCapsLockFlag ? VkContext->PageNumber++ : VkContext->PageNumber--;
+      }
+
+      KeyData.KeyState.KeyToggleState &= ~EFI_CAPS_LOCK_ACTIVE;
+      KeyData.KeyState.KeyToggleState |= VkContext->IsCapsLockFlag ? EFI_CAPS_LOCK_ACTIVE : 0;
+      VkContext->IsRedrawUpdateUI      = TRUE;
       break;
 
     default:
+      if ((Unicode & VkKeyScanMask) != 0) {
+        KeyData.Key.ScanCode = Unicode & ~VkKeyScanMask;
+      } else {
+        KeyData.Key.UnicodeChar = Unicode;
+      }
+
       break;
-    }
-    VkContext->IsRedrawUpdateUI = TRUE;
-    break;
-
-  case VkKeyCapslock:
-    VkContext->IsCapsLockFlag = !VkContext->IsCapsLockFlag;
-    if (VkContext->PageNumber >= VkPage0 && VkContext->PageNumber <= VkPage1) {
-      VkContext->IsCapsLockFlag ? VkContext->PageNumber++ : VkContext->PageNumber--;
-    }
-    KeyData.KeyState.KeyToggleState &= ~EFI_CAPS_LOCK_ACTIVE;
-    KeyData.KeyState.KeyToggleState |= VkContext->IsCapsLockFlag ? EFI_CAPS_LOCK_ACTIVE : 0;
-    VkContext->IsRedrawUpdateUI      = TRUE;
-    break;
-
-  default:
-    if ((Unicode & VkKeyScanMask) != 0) {
-      KeyData.Key.ScanCode    = Unicode & ~VkKeyScanMask;
-    } else {
-      KeyData.Key.UnicodeChar = Unicode;
-    }
-    break;
   }
 
-  if (KeyData.Key.ScanCode == SCAN_NULL && KeyData.Key.UnicodeChar == CHAR_NULL) {
+  if ((KeyData.Key.ScanCode == SCAN_NULL) && (KeyData.Key.UnicodeChar == CHAR_NULL)) {
     if (!VkContext->IsSupportPartialKey) {
       goto End;
     }
@@ -297,6 +310,7 @@ VkPushTheKey (
       gBS->SignalEvent (VkContext->KeyNotifyProcessEvent);
     }
   }
+
   VkContext->Keybuffer[IndexEd] = KeyData;
   VkContext->KeyEndIndex        = ++IndexEd % MAX_KEY_BUF_SIZE;
 
@@ -318,27 +332,27 @@ End:
 VOID
 EFIAPI
 VkKeyNotifyProcessHandler (
-  IN  EFI_EVENT Event,
-  IN  VOID      *Context
+  IN  EFI_EVENT  Event,
+  IN  VOID       *Context
   )
 {
-  EFI_STATUS   Status;
-  VK_CONTEXT   *VkContext;
-  EFI_KEY_DATA KeyData;
-  LIST_ENTRY   *Link;
-  LIST_ENTRY   *NotifyList;
-  VK_NOTIFY    *CurrentNotify;
-  EFI_TPL      OldTpl;
+  EFI_STATUS    Status;
+  VK_CONTEXT    *VkContext;
+  EFI_KEY_DATA  KeyData;
+  LIST_ENTRY    *Link;
+  LIST_ENTRY    *NotifyList;
+  VK_NOTIFY     *CurrentNotify;
+  EFI_TPL       OldTpl;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyNotifyProcessHandler Start\n"));
-  VkContext = (VK_CONTEXT *) Context;
-  OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
+  VkContext = (VK_CONTEXT *)Context;
+  OldTpl    = gBS->RaiseTPL (TPL_NOTIFY);
 
   //
   // Invoke notification functions.
   //
   NotifyList = &VkContext->NotifyList;
-  Status = VkPopTheKey (VkContext, &KeyData);
+  Status     = VkPopTheKey (VkContext, &KeyData);
   if (EFI_ERROR (Status)) {
     goto Error;
   }
@@ -376,21 +390,23 @@ End:
 **/
 BOOLEAN
 IsTouchVk (
-  IN  VK_CONTEXT *VkContext,
-  OUT VK_STRUCT  *KeyItem,
-  OUT UINT32     *Index,
-  IN  UINT32     TouchX,
-  IN  UINT32     TouchY
+  IN  VK_CONTEXT  *VkContext,
+  OUT VK_STRUCT   *KeyItem,
+  OUT UINT32      *Index,
+  IN  UINT32      TouchX,
+  IN  UINT32      TouchY
   )
 {
   for (*Index = 0; *Index < VkContext->NumOfKeysInfo; (*Index)++) {
-    if (VkContext->KeyboardBodyPtr[*Index].DisStartX < TouchX &&
-        VkContext->KeyboardBodyPtr[*Index].DisEndX   > TouchX &&
-        VkContext->KeyboardBodyPtr[*Index].DisStartY < TouchY &&
-        VkContext->KeyboardBodyPtr[*Index].DisEndY   > TouchY) {
+    if ((VkContext->KeyboardBodyPtr[*Index].DisStartX < TouchX) &&
+        (VkContext->KeyboardBodyPtr[*Index].DisEndX   > TouchX) &&
+        (VkContext->KeyboardBodyPtr[*Index].DisStartY < TouchY) &&
+        (VkContext->KeyboardBodyPtr[*Index].DisEndY   > TouchY))
+    {
       break;
     }
   }
+
   if (*Index != VkContext->NumOfKeysInfo) {
     *KeyItem = VkContext->KeyboardBodyPtr[*Index];
   }
@@ -410,15 +426,16 @@ IsTouchVk (
 VOID
 EFIAPI
 VkReadyToBootCallBack (
-  IN EFI_EVENT Event,
-  IN VOID      *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   )
 {
-  VK_CONTEXT                    *VkContext;
+  VK_CONTEXT  *VkContext;
+
   VkContext = (VK_CONTEXT *)Context;
 
   HideVkBody (VkContext);
-  VkContext->TargetKeyboardDisplay  = VkDisplayAttributeNone;
+  VkContext->TargetKeyboardDisplay = VkDisplayAttributeNone;
 }
 
 /**
@@ -437,19 +454,19 @@ VkReadyToBootCallBack (
 VOID
 EFIAPI
 VkTimer (
-  IN EFI_EVENT Event,
-  IN VOID      *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   )
 {
-  EFI_ABSOLUTE_POINTER_PROTOCOL *AbsolutePointer;
-  EFI_ABSOLUTE_POINTER_STATE    Point;
-  EFI_STATUS                    Status;
-  UINT32                        TouchX;
-  UINT32                        TouchY;
-  VK_CONTEXT                    *VkContext;
-  UINT32                        Index;
-  VK_STRUCT                     KeyItem;
-  UINT32                        Font;
+  EFI_ABSOLUTE_POINTER_PROTOCOL  *AbsolutePointer;
+  EFI_ABSOLUTE_POINTER_STATE     Point;
+  EFI_STATUS                     Status;
+  UINT32                         TouchX;
+  UINT32                         TouchY;
+  VK_CONTEXT                     *VkContext;
+  UINT32                         Index;
+  VK_STRUCT                      KeyItem;
+  UINT32                         Font;
 
   DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT, "VkTimer Start\n"));
   VkContext = (VK_CONTEXT *)Context;
@@ -470,11 +487,12 @@ VkTimer (
   // Error handle for invalid information
   //
   AbsolutePointer = VkContext->AbsolutePointer;
-  Status = gBS->CheckEvent (AbsolutePointer->WaitForInput);
+  Status          = gBS->CheckEvent (AbsolutePointer->WaitForInput);
   if (EFI_ERROR (Status)) {
     if (Status != EFI_NOT_READY) {
       DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_VK_POINTS, "ERROR - VkContext->AbsolutePointer->WaitForInput->CheckEvent failed! Status: %r\n", Status));
     }
+
     goto Error;
   }
 
@@ -494,6 +512,7 @@ VkTimer (
     Status = EFI_PROTOCOL_ERROR;
     goto Error;
   }
+
   if (VkContext->AbsolutePointer->Mode->AbsoluteMaxY <= Point.CurrentY) {
     DEBUG ((
       DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_VK_POINTS,
@@ -512,13 +531,15 @@ VkTimer (
   if (!VkContext->TouchActive) {
     VkContext->KeyPressed = FALSE;
   }
+
   ConvertCoordinate (VkContext, Point, &TouchX, &TouchY);
 
   if (!VkContext->KeyPressed &&
       VkContext->TouchActive &&
-      IsTouchVk (VkContext, &KeyItem, &Index, TouchX, TouchY)) {
+      IsTouchVk (VkContext, &KeyItem, &Index, TouchX, TouchY))
+  {
     VkGetMappingFont (VkContext, KeyItem, &Font);
-    DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_INFO,                   "VK Touch event is trigger!\n" ));
+    DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_INFO, "VK Touch event is trigger!\n"));
     DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_INFO | DEBUG_VK_POINTS, "TouchActive:            0x%04x  \n", VkContext->TouchActive));
     DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_INFO | DEBUG_VK_POINTS, "CurrentKeyboardDisplay: 0x%04x  \n", VkContext->CurrentKeyboardDisplay));
     DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_INFO | DEBUG_VK_POINTS, "X:                      0x%016Lx\n", Point.CurrentX));
@@ -529,22 +550,24 @@ VkTimer (
     DEBUG ((DEBUG_VK_TIMER_ENTRY_EXIT | DEBUG_INFO | DEBUG_VK_POINTS, "Key Unicode:            0x%08x  \n", Font));
 
     switch (Font) {
-    //
-    // Touch the small keyboard icon, show/hide the keyboard.
-    //
-    case VkKeyTypeMaximum:
-      KeyboardLayoutHandler (VkContext, Index);
-      break;
-
-    //
-    // Touch the key raw.
-    //
-    default:
-      if (VkContext->CurrentKeyboardDisplay == VkDisplayAttributeNone) {
+      //
+      // Touch the small keyboard icon, show/hide the keyboard.
+      //
+      case VkKeyTypeMaximum:
+        KeyboardLayoutHandler (VkContext, Index);
         break;
-      }
-      VkPushTheKey (VkContext, (UINT16) Font);
+
+      //
+      // Touch the key raw.
+      //
+      default:
+        if (VkContext->CurrentKeyboardDisplay == VkDisplayAttributeNone) {
+          break;
+        }
+
+        VkPushTheKey (VkContext, (UINT16)Font);
     }
+
     VkContext->KeyPressed = TRUE;
   }
 
@@ -571,14 +594,14 @@ End:
 VOID
 EFIAPI
 VkTouchWaitForKey (
-  IN EFI_EVENT Event,
-  IN VOID      *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   )
 {
-  VK_CONTEXT *VkContext;
+  VK_CONTEXT  *VkContext;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkTouchWaitForKey Start\n"));
-  VkContext = (VK_CONTEXT*) Context;
+  VkContext = (VK_CONTEXT *)Context;
 
   if (VkContext->KeyStartIndex != VkContext->KeyEndIndex) {
     DEBUG ((DEBUG_VK_KEYS, "Signal VkTouchWaitForKey\n"));
@@ -597,16 +620,15 @@ VkTouchWaitForKey (
   @retval EFI_IMAGE_INPUT   Image data on BIOS image.
 
 **/
-EFI_IMAGE_INPUT*
+EFI_IMAGE_INPUT *
 VkGetImage (
-  IN VK_CONTEXT   *VkContext,
-  IN EFI_IMAGE_ID ImageId
+  IN VK_CONTEXT    *VkContext,
+  IN EFI_IMAGE_ID  ImageId
   )
 {
-  EFI_STATUS      Status;
-  EFI_IMAGE_INPUT Image;
-  EFI_IMAGE_INPUT *VkImage;
-
+  EFI_STATUS       Status;
+  EFI_IMAGE_INPUT  Image;
+  EFI_IMAGE_INPUT  *VkImage;
 
   Status = VkContext->HiiImageEx->GetImageEx (
                                     VkContext->HiiImageEx,
@@ -635,7 +657,7 @@ VkGetImage (
 **/
 VOID
 VkDumpContext (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   )
 {
   DEBUG ((
@@ -709,15 +731,15 @@ VkDumpContext (
 **/
 EFI_STATUS
 VkApiStart (
-  IN OUT VK_CONTEXT *VkContext,
-  IN EFI_HANDLE     Controller
+  IN OUT VK_CONTEXT  *VkContext,
+  IN EFI_HANDLE      Controller
   )
 {
-  EFI_STATUS                        Status;
-  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *SimpleEx;
-  EFI_KEY_DATA                      KeyData;
-  EFI_HANDLE                        NotifyHandle;
-  EFI_EVENT                         ReadyToBootEvent;
+  EFI_STATUS                         Status;
+  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *SimpleEx;
+  EFI_KEY_DATA                       KeyData;
+  EFI_HANDLE                         NotifyHandle;
+  EFI_EVENT                          ReadyToBootEvent;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkApiStart Start\n"));
 
@@ -772,7 +794,7 @@ VkApiStart (
   Status = gBS->SetTimer (
                   VkContext->TimerEvent,
                   TimerPeriodic,
-                  (UINT64) VK_POLL_INTERVAL
+                  (UINT64)VK_POLL_INTERVAL
                   );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_ERROR, "ERROR - Failed to set the timer event, Status: %r\n", Status));
@@ -796,7 +818,7 @@ VkApiStart (
   Status = gBS->LocateProtocol (
                   &gEfiHiiImageExProtocolGuid,
                   NULL,
-                  (VOID **) &VkContext->HiiImageEx
+                  (VOID **)&VkContext->HiiImageEx
                   );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_ERROR, "ERROR - Failed to open HiiImageEx protocol, Status: %r\n", Status));
@@ -857,7 +879,7 @@ VkApiStart (
 
   DEBUG_CODE (
     VkDumpContext (VkContext);
-  );
+    );
 
   Status = gBS->HandleProtocol (
                   gST->ConsoleInHandle,
@@ -874,12 +896,12 @@ VkApiStart (
   KeyData.Key.ScanCode            = SCAN_ESC;
   KeyData.Key.UnicodeChar         = CHAR_NULL;
   NotifyHandle                    = NULL;
-  Status = SimpleEx->RegisterKeyNotify (
-                       SimpleEx,
-                       &KeyData,
-                       VkNotifyKeyCallback,
-                       &NotifyHandle
-                       );
+  Status                          = SimpleEx->RegisterKeyNotify (
+                                                SimpleEx,
+                                                &KeyData,
+                                                VkNotifyKeyCallback,
+                                                &NotifyHandle
+                                                );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_ERROR, "ERROR - Failed to register 'Esc', Status: %r\n", Status));
     goto Error;
@@ -889,12 +911,12 @@ VkApiStart (
   KeyData.KeyState.KeyShiftState  = 0;
   KeyData.Key.ScanCode            = SCAN_NULL;
   KeyData.Key.UnicodeChar         = CHAR_CARRIAGE_RETURN;
-  Status = SimpleEx->RegisterKeyNotify (
-                       SimpleEx,
-                       &KeyData,
-                       VkNotifyKeyCallback,
-                       &NotifyHandle
-                       );
+  Status                          = SimpleEx->RegisterKeyNotify (
+                                                SimpleEx,
+                                                &KeyData,
+                                                VkNotifyKeyCallback,
+                                                &NotifyHandle
+                                                );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT | DEBUG_ERROR, "ERROR - Failed to register 'Enter', Status: %r\n", Status));
     goto Error;
@@ -917,7 +939,8 @@ VkApiStart (
       break;
     }
   }
-  if (EFI_ERROR(Status)) {
+
+  if (EFI_ERROR (Status)) {
     goto Error;
   }
 
@@ -946,12 +969,12 @@ End:
 **/
 VOID
 VkApiStop (
-  IN VK_CONTEXT *VkContext
+  IN VK_CONTEXT  *VkContext
   )
 {
-  EFI_STATUS Status;
-  VK_NOTIFY  *NotifyNode;
-  LIST_ENTRY *NotifyList;
+  EFI_STATUS  Status;
+  VK_NOTIFY   *NotifyNode;
+  LIST_ENTRY  *NotifyList;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkApiStop Start\n"));
 
@@ -1007,11 +1030,11 @@ VkApiStop (
 EFI_STATUS
 EFIAPI
 VkKeyboardReset (
-  IN EFI_SIMPLE_TEXT_INPUT_PROTOCOL *This,
-  IN BOOLEAN                        ExtendedVerification
+  IN EFI_SIMPLE_TEXT_INPUT_PROTOCOL  *This,
+  IN BOOLEAN                         ExtendedVerification
   )
 {
-  EFI_STATUS Status;
+  EFI_STATUS  Status;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardReset Start\n"));
   Status = EFI_SUCCESS;
@@ -1044,12 +1067,12 @@ VkKeyboardReset (
 EFI_STATUS
 EFIAPI
 VkKeyboardResetEx (
-  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN BOOLEAN                           ExtendedVerification
+  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN BOOLEAN                            ExtendedVerification
   )
 {
-  EFI_STATUS Status;
-  VK_CONTEXT *VkContext;
+  EFI_STATUS  Status;
+  VK_CONTEXT  *VkContext;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardResetEx Start\n"));
 
@@ -1094,8 +1117,8 @@ End:
 EFI_STATUS
 EFIAPI
 VkKeyboardReadKeyStroke (
-  IN  EFI_SIMPLE_TEXT_INPUT_PROTOCOL *This,
-  OUT EFI_INPUT_KEY                  *Key
+  IN  EFI_SIMPLE_TEXT_INPUT_PROTOCOL  *This,
+  OUT EFI_INPUT_KEY                   *Key
   )
 {
   EFI_STATUS    Status;
@@ -1106,7 +1129,7 @@ VkKeyboardReadKeyStroke (
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardReadKeyStroke Start\n"));
 
   OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
-  if (This == NULL || Key == NULL) {
+  if ((This == NULL) || (Key == NULL)) {
     Status = EFI_INVALID_PARAMETER;
     goto Error;
   }
@@ -1117,8 +1140,8 @@ VkKeyboardReadKeyStroke (
   if (EFI_ERROR (Status)) {
     goto Error;
   }
-  *Key = TmpKeyData.Key;
 
+  *Key = TmpKeyData.Key;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardReadKeyStroke Success, Status: %r\n", Status));
   goto End;
@@ -1147,19 +1170,19 @@ End:
 EFI_STATUS
 EFIAPI
 VkKeyboardReadKeyStrokeEx (
-  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  OUT EFI_KEY_DATA                      *KeyData
+  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  OUT EFI_KEY_DATA                       *KeyData
   )
 {
-  VK_CONTEXT        *VkContext;
-  EFI_STATUS        Status;
-  EFI_TPL           OldTpl;
-  EFI_KEY_DATA      TmpKeyData;
+  VK_CONTEXT    *VkContext;
+  EFI_STATUS    Status;
+  EFI_TPL       OldTpl;
+  EFI_KEY_DATA  TmpKeyData;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardReadKeyStrokeEx Start\n"));
 
   OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
-  if (This == NULL || KeyData == NULL) {
+  if ((This == NULL) || (KeyData == NULL)) {
     Status = EFI_INVALID_PARAMETER;
     goto Error;
   }
@@ -1172,10 +1195,12 @@ VkKeyboardReadKeyStrokeEx (
       DEBUG ((DEBUG_VK_KEYS, "ERROR - Failed to VkPopTheKey check whether keybuffer is empty, Status: %r\n", Status));
       goto Error;
     }
-    if (TmpKeyData.Key.ScanCode != SCAN_NULL || TmpKeyData.Key.UnicodeChar != CHAR_NULL) {
+
+    if ((TmpKeyData.Key.ScanCode != SCAN_NULL) || (TmpKeyData.Key.UnicodeChar != CHAR_NULL)) {
       break;
     }
   }
+
   *KeyData = TmpKeyData;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardReadKeyStrokeEx Success, Status: %r\n", Status));
@@ -1204,17 +1229,17 @@ End:
 EFI_STATUS
 EFIAPI
 VkKeyboardSetState (
-  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN EFI_KEY_TOGGLE_STATE              *KeyToggleState
+  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN EFI_KEY_TOGGLE_STATE               *KeyToggleState
   )
 {
-  EFI_STATUS Status;
-  VK_CONTEXT *VkContext;
+  EFI_STATUS  Status;
+  VK_CONTEXT  *VkContext;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardSetState Start\n"));
 
   Status = EFI_SUCCESS;
-  if (This == NULL || KeyToggleState == NULL) {
+  if ((This == NULL) || (KeyToggleState == NULL)) {
     Status = EFI_INVALID_PARAMETER;
     goto Error;
   }
@@ -1225,7 +1250,7 @@ VkKeyboardSetState (
   VkContext->IsCapsLockFlag      = (*KeyToggleState & EFI_CAPS_LOCK_ACTIVE) == EFI_CAPS_LOCK_ACTIVE;
   VkContext->IsSupportPartialKey = (*KeyToggleState & EFI_KEY_STATE_EXPOSED) == EFI_KEY_STATE_EXPOSED;
 
-  if (VkContext->PageNumber >= VkPage0 && VkContext->PageNumber <= VkPage1) {
+  if ((VkContext->PageNumber >= VkPage0) && (VkContext->PageNumber <= VkPage1)) {
     VkContext->PageNumber = VkContext->IsCapsLockFlag ? VkPage1 : VkPage0;
   }
 
@@ -1265,18 +1290,18 @@ End:
 EFI_STATUS
 EFIAPI
 VkKeyboardRegisterKeyNotify (
-  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN  EFI_KEY_DATA                      *KeyData,
-  IN  EFI_KEY_NOTIFY_FUNCTION           KeyNotificationFunction,
-  OUT EFI_HANDLE                        *NotifyHandle
+  IN  EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN  EFI_KEY_DATA                       *KeyData,
+  IN  EFI_KEY_NOTIFY_FUNCTION            KeyNotificationFunction,
+  OUT EFI_HANDLE                         *NotifyHandle
   )
 {
-  EFI_STATUS Status;
-  EFI_TPL    OldTpl;
-  VK_CONTEXT *VkContext;
-  LIST_ENTRY *Link;
-  VK_NOTIFY  *CurrentNotify;
-  VK_NOTIFY  *NewNotify;
+  EFI_STATUS  Status;
+  EFI_TPL     OldTpl;
+  VK_CONTEXT  *VkContext;
+  LIST_ENTRY  *Link;
+  VK_NOTIFY   *CurrentNotify;
+  VK_NOTIFY   *NewNotify;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardRegisterKeyNotify Start\n"));
 
@@ -1285,12 +1310,12 @@ VkKeyboardRegisterKeyNotify (
   //
   OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
   Status = EFI_SUCCESS;
-  if (This == NULL || KeyData == NULL || NotifyHandle == NULL || KeyNotificationFunction == NULL) {
+  if ((This == NULL) || (KeyData == NULL) || (NotifyHandle == NULL) || (KeyNotificationFunction == NULL)) {
     Status = EFI_INVALID_PARAMETER;
     goto Error;
   }
-  VkContext = VK_CONTEXT_FROM_SIMPLETEXTINEX_PROTOCOL (This);
 
+  VkContext = VK_CONTEXT_FROM_SIMPLETEXTINEX_PROTOCOL (This);
 
   //
   // Return EFI_SUCCESS if the (KeyData, NotificationFunction) is already registered.
@@ -1300,7 +1325,7 @@ VkKeyboardRegisterKeyNotify (
     if (IsKeyRegistered (&CurrentNotify->KeyData, KeyData)) {
       if (CurrentNotify->KeyNotificationFn == KeyNotificationFunction) {
         *NotifyHandle = CurrentNotify;
-        Status = EFI_SUCCESS;
+        Status        = EFI_SUCCESS;
         goto End;
       }
     }
@@ -1309,7 +1334,7 @@ VkKeyboardRegisterKeyNotify (
   //
   // Allocate resource to save the notification function
   //
-  NewNotify = (VK_NOTIFY *) AllocateZeroPool (sizeof (VK_NOTIFY));
+  NewNotify = (VK_NOTIFY *)AllocateZeroPool (sizeof (VK_NOTIFY));
   if (NewNotify == NULL) {
     Status = EFI_OUT_OF_RESOURCES;
     goto Error;
@@ -1351,16 +1376,16 @@ End:
 EFI_STATUS
 EFIAPI
 VkKeyboardUnregisterKeyNotify (
-  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,
-  IN EFI_HANDLE                        NotificationHandle
+  IN EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL  *This,
+  IN EFI_HANDLE                         NotificationHandle
   )
 {
-  EFI_STATUS Status;
-  VK_CONTEXT *VkContext;
-  EFI_TPL    OldTpl;
-  LIST_ENTRY *Link;
-  VK_NOTIFY  *CurrentNotify;
-  BOOLEAN    IsFindNotifyHandle;
+  EFI_STATUS  Status;
+  VK_CONTEXT  *VkContext;
+  EFI_TPL     OldTpl;
+  LIST_ENTRY  *Link;
+  VK_NOTIFY   *CurrentNotify;
+  BOOLEAN     IsFindNotifyHandle;
 
   DEBUG ((DEBUG_VK_ROUTINE_ENTRY_EXIT, "VkKeyboardUnregisterKeyNotify Start\n"));
 
@@ -1369,10 +1394,11 @@ VkKeyboardUnregisterKeyNotify (
   //
   OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
   Status = EFI_SUCCESS;
-  if (This == NULL || NotificationHandle == NULL) {
+  if ((This == NULL) || (NotificationHandle == NULL)) {
     Status = EFI_INVALID_PARAMETER;
     goto Error;
   }
+
   VkContext = VK_CONTEXT_FROM_SIMPLETEXTINEX_PROTOCOL (This);
 
   IsFindNotifyHandle = FALSE;

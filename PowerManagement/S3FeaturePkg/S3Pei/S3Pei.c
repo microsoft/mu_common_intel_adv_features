@@ -25,7 +25,7 @@ S3PeiEntryPoint (
   IN CONST EFI_PEI_SERVICES     **PeiServices
   )
 {
-  EFI_STATUS Status;
+  EFI_STATUS  Status;
 
   //
   // Install EFI_PEI_MM_ACCESS_PPI for S3 resume case

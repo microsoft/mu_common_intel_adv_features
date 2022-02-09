@@ -17,7 +17,6 @@
 #include <Library/PostCodeLib.h>
 #include <Library/PostCodeMapLib.h>
 
-
 /**
   Convert status code value and write data to post code.
 
@@ -43,14 +42,14 @@
 EFI_STATUS
 EFIAPI
 PostCodeStatusCodeReportWorker (
-  IN EFI_STATUS_CODE_TYPE           CodeType,
-  IN EFI_STATUS_CODE_VALUE          Value,
-  IN UINT32                         Instance,
-  IN EFI_GUID                       *CallerId,
-  IN EFI_STATUS_CODE_DATA           *Data OPTIONAL
+  IN EFI_STATUS_CODE_TYPE   CodeType,
+  IN EFI_STATUS_CODE_VALUE  Value,
+  IN UINT32                 Instance,
+  IN EFI_GUID               *CallerId,
+  IN EFI_STATUS_CODE_DATA   *Data OPTIONAL
   )
 {
-  UINT32 PostCodeValue;
+  UINT32  PostCodeValue;
 
   PostCodeValue = GetPostCodeFromStatusCode (CodeType, Value);
   if (PostCodeValue != 0) {
@@ -75,18 +74,18 @@ PostCodeStatusCodeReportWorker (
 EFI_STATUS
 EFIAPI
 RegisterPostCodeBootTimeHandlers (
-  IN CONST EFI_GUID        *Protocol,
-  IN VOID                  *Interface,
-  IN EFI_HANDLE            Handle
+  IN CONST EFI_GUID  *Protocol,
+  IN VOID            *Interface,
+  IN EFI_HANDLE      Handle
   )
 {
-  EFI_STATUS                   Status;
-  EFI_SMM_RSC_HANDLER_PROTOCOL *RscHandlerProtocol;
+  EFI_STATUS                    Status;
+  EFI_SMM_RSC_HANDLER_PROTOCOL  *RscHandlerProtocol;
 
   Status = gSmst->SmmLocateProtocol (
                     &gEfiSmmRscHandlerProtocolGuid,
                     NULL,
-                    (VOID **) &RscHandlerProtocol
+                    (VOID **)&RscHandlerProtocol
                     );
   ASSERT_EFI_ERROR (Status);
 
@@ -110,13 +109,13 @@ RegisterPostCodeBootTimeHandlers (
 EFI_STATUS
 EFIAPI
 SmmPostCodeStatusCodeHandlerLibConstructor (
-  IN EFI_HANDLE           ImageHandle,
-  IN EFI_SYSTEM_TABLE     *SystemTable
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  EFI_STATUS                   Status;
-  VOID                         *Registration;
-  EFI_SMM_RSC_HANDLER_PROTOCOL *RscHandlerProtocol;
+  EFI_STATUS                    Status;
+  VOID                          *Registration;
+  EFI_SMM_RSC_HANDLER_PROTOCOL  *RscHandlerProtocol;
 
   if (!PcdGetBool (PcdStatusCodeUsePostCode)) {
     return EFI_SUCCESS;
@@ -125,7 +124,7 @@ SmmPostCodeStatusCodeHandlerLibConstructor (
   Status = gSmst->SmmLocateProtocol (
                     &gEfiSmmRscHandlerProtocolGuid,
                     NULL,
-                    (VOID **) &RscHandlerProtocol
+                    (VOID **)&RscHandlerProtocol
                     );
   if (!EFI_ERROR (Status)) {
     RegisterPostCodeBootTimeHandlers (NULL, NULL, NULL);

@@ -21,13 +21,13 @@
 #include <Protocol/SmmAccess2.h>
 #include "Usb3DebugPortLibInternal.h"
 
-extern EFI_SMRAM_DESCRIPTOR mSmramCheckRanges[MAX_SMRAM_RANGE];
-extern UINTN                mSmramCheckRangeCount;
-extern BOOLEAN              mUsb3InSmm;
-extern UINT64               mUsb3MmioSize;
-extern BOOLEAN              mUsb3GetCapSuccess;
+extern EFI_SMRAM_DESCRIPTOR  mSmramCheckRanges[MAX_SMRAM_RANGE];
+extern UINTN                 mSmramCheckRangeCount;
+extern BOOLEAN               mUsb3InSmm;
+extern UINT64                mUsb3MmioSize;
+extern BOOLEAN               mUsb3GetCapSuccess;
 
-GUID                        gUsb3DbgGuid =  USB3_DBG_GUID;
+GUID  gUsb3DbgGuid =  USB3_DBG_GUID;
 
 USB3_DEBUG_PORT_CONTROLLER  mUsb3DebugPort;
 USB3_DEBUG_PORT_INSTANCE    *mUsb3Instance = NULL;
@@ -41,24 +41,24 @@ GetXhciBaseAddress (
   VOID
   )
 {
-  UINT8                       Bus;
-  UINT8                       Device;
-  UINT8                       Function;
-  EFI_PHYSICAL_ADDRESS        Address;
-  UINT32                      Low;
-  UINT32                      High;
+  UINT8                 Bus;
+  UINT8                 Device;
+  UINT8                 Function;
+  EFI_PHYSICAL_ADDRESS  Address;
+  UINT32                Low;
+  UINT32                High;
 
   if (mUsb3DebugPort.Controller == 0) {
-    mUsb3DebugPort.Controller = GetUsb3DebugPortController();
+    mUsb3DebugPort.Controller = GetUsb3DebugPortController ();
   }
 
-  Bus = mUsb3DebugPort.PciAddress.Bus;
-  Device = mUsb3DebugPort.PciAddress.Device;
+  Bus      = mUsb3DebugPort.PciAddress.Bus;
+  Device   = mUsb3DebugPort.PciAddress.Device;
   Function = mUsb3DebugPort.PciAddress.Function;
 
-  Low = PciRead32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET));
-  High = PciRead32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4));
-  Address = (EFI_PHYSICAL_ADDRESS) (LShiftU64 ((UINT64) High, 32) | Low);
+  Low     = PciRead32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET));
+  High    = PciRead32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4));
+  Address = (EFI_PHYSICAL_ADDRESS)(LShiftU64 ((UINT64)High, 32) | Low);
   //
   // Mask other parts which are not part of base address
   //
@@ -75,16 +75,16 @@ GetUsb3DebugPortInstance (
   VOID
   )
 {
-  USB3_DEBUG_PORT_INSTANCE               *Instance;
-  EFI_PHYSICAL_ADDRESS                   XhcMmioBase;
-  UINT64                                 CapabilityPointer;
-  UINT32                                 Capability;
-  BOOLEAN                                Flag;
-  UINT8                                  Bus;
-  UINT8                                  Device;
-  UINT8                                  Function;
-  UINT16                                 Command;
-  USB3_DEBUG_PORT_CONTROLLER             UsbDebugPort;
+  USB3_DEBUG_PORT_INSTANCE    *Instance;
+  EFI_PHYSICAL_ADDRESS        XhcMmioBase;
+  UINT64                      CapabilityPointer;
+  UINT32                      Capability;
+  BOOLEAN                     Flag;
+  UINT8                       Bus;
+  UINT8                       Device;
+  UINT8                       Function;
+  UINT16                      Command;
+  USB3_DEBUG_PORT_CONTROLLER  UsbDebugPort;
 
   Instance = NULL;
 
@@ -101,17 +101,17 @@ GetUsb3DebugPortInstance (
 
   Command = GetXhciPciCommand ();
 
-  UsbDebugPort.Controller = GetUsb3DebugPortController();
-  Bus      = UsbDebugPort.PciAddress.Bus;
-  Device   = UsbDebugPort.PciAddress.Device;
-  Function = UsbDebugPort.PciAddress.Function;
+  UsbDebugPort.Controller = GetUsb3DebugPortController ();
+  Bus                     = UsbDebugPort.PciAddress.Bus;
+  Device                  = UsbDebugPort.PciAddress.Device;
+  Function                = UsbDebugPort.PciAddress.Function;
 
   //
   // Set Command Register
   //
   if ((Command & EFI_PCI_COMMAND_MEMORY_SPACE) == 0) {
-    PciWrite16(PCI_LIB_ADDRESS(Bus, Device, Function, PCI_COMMAND_OFFSET), Command | EFI_PCI_COMMAND_MEMORY_SPACE);
-    PciRead16(PCI_LIB_ADDRESS(Bus, Device, Function, PCI_COMMAND_OFFSET));
+    PciWrite16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command | EFI_PCI_COMMAND_MEMORY_SPACE);
+    PciRead16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET));
   }
 
   //
@@ -122,25 +122,27 @@ GetUsb3DebugPortInstance (
   //
   // Search XHCI debug capability
   //
-  Flag = FALSE;
+  Flag       = FALSE;
   Capability = MmioRead32 ((UINTN)CapabilityPointer);
   while (TRUE) {
     if ((Capability & XHC_CAPABILITY_ID_MASK) == PCI_CAPABILITY_ID_DEBUG_PORT) {
       Flag = TRUE;
       break;
     }
+
     if ((((Capability & XHC_NEXT_CAPABILITY_MASK) >> 8) & XHC_CAPABILITY_ID_MASK) == 0) {
       //
       // Reach the end of list, quit
       //
       break;
     }
+
     CapabilityPointer += ((Capability & XHC_NEXT_CAPABILITY_MASK) >> 8) * 4;
-    Capability = MmioRead32 ((UINTN)CapabilityPointer);
+    Capability         = MmioRead32 ((UINTN)CapabilityPointer);
   }
 
   if (Flag) {
-    Instance = (USB3_DEBUG_PORT_INSTANCE *)(UINTN) MmioRead32 ((UINTN) (CapabilityPointer + XHC_DC_DCDDI2));
+    Instance = (USB3_DEBUG_PORT_INSTANCE *)(UINTN)MmioRead32 ((UINTN)(CapabilityPointer + XHC_DC_DCDDI2));
 
     if (Instance != NULL) {
       FixUsb3InstanceResource (Instance, XhcMmioBase);
@@ -150,11 +152,10 @@ GetUsb3DebugPortInstance (
   //
   // Restore Command Register
   //
-  PciWrite16(PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command);
+  PciWrite16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command);
 
   return Instance;
 }
-
 
 /**
   Initialize USB3 debug port.
@@ -190,10 +191,10 @@ USB3InitializeReal (
   VOID
   )
 {
-  USB3_DEBUG_PORT_INSTANCE    UsbDbg;
-  USB3_DEBUG_PORT_INSTANCE    *Instance;
-  EFI_PHYSICAL_ADDRESS        Address;
-  EFI_STATUS                  Status;
+  USB3_DEBUG_PORT_INSTANCE  UsbDbg;
+  USB3_DEBUG_PORT_INSTANCE  *Instance;
+  EFI_PHYSICAL_ADDRESS      Address;
+  EFI_STATUS                Status;
 
   if ((gST == NULL) || (gBS == NULL)) {
     //
@@ -202,7 +203,7 @@ USB3InitializeReal (
     return EFI_DEVICE_ERROR;
   }
 
-  Status = EfiGetSystemConfigurationTable (&gUsb3DbgGuid, (VOID **) &mUsb3Instance);
+  Status = EfiGetSystemConfigurationTable (&gUsb3DbgGuid, (VOID **)&mUsb3Instance);
   if (!EFI_ERROR (Status)) {
     return RETURN_SUCCESS;
   }
@@ -216,20 +217,22 @@ USB3InitializeReal (
     //
     // Initialize USB debug
     //
-    SetMem (&UsbDbg, sizeof(UsbDbg), 0);
+    SetMem (&UsbDbg, sizeof (UsbDbg), 0);
     DiscoverUsb3DebugPort (&UsbDbg);
     if (UsbDbg.DebugSupport) {
       InitializeUsb3DebugPort (&UsbDbg);
     }
+
     Instance = &UsbDbg;
   }
+
   Address = SIZE_4GB;
-  Status = gBS->AllocatePages (
-                  AllocateMaxAddress,
-                  EfiACPIMemoryNVS,
-                  EFI_SIZE_TO_PAGES (sizeof (USB3_DEBUG_PORT_INSTANCE)),
-                  &Address
-                  );
+  Status  = gBS->AllocatePages (
+                   AllocateMaxAddress,
+                   EfiACPIMemoryNVS,
+                   EFI_SIZE_TO_PAGES (sizeof (USB3_DEBUG_PORT_INSTANCE)),
+                   &Address
+                   );
   if (EFI_ERROR (Status)) {
     return Status;
   }
@@ -274,10 +277,10 @@ CalculateMmioSize (
   USB3_DEBUG_PORT_CONTROLLER  UsbDebugPort;
   EFI_PHYSICAL_ADDRESS        XhcMmioBase;
 
-  UsbDebugPort.Controller = GetUsb3DebugPortController();
-  Bus      = UsbDebugPort.PciAddress.Bus;
-  Device   = UsbDebugPort.PciAddress.Device;
-  Function = UsbDebugPort.PciAddress.Function;
+  UsbDebugPort.Controller = GetUsb3DebugPortController ();
+  Bus                     = UsbDebugPort.PciAddress.Bus;
+  Device                  = UsbDebugPort.PciAddress.Device;
+  Function                = UsbDebugPort.PciAddress.Function;
 
   Mask     = 0xFFFFFFF0;
   MmioSize = 0;
@@ -287,14 +290,14 @@ CalculateMmioSize (
   //
   // Disable MSE
   //
-  Command = PciRead16 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_COMMAND_OFFSET));
+  Command = PciRead16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET));
   PciWrite16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command & ~(EFI_PCI_COMMAND_MEMORY_SPACE));
 
   //
   // Get Mmio Size
   //
-  PciWrite32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET), 0xFFFFFFFF);
-  Value    = PciRead32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET));
+  PciWrite32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET), 0xFFFFFFFF);
+  Value = PciRead32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET));
 
   switch (Value & 0x07) {
     case 0x0:
@@ -308,8 +311,8 @@ CalculateMmioSize (
       // Memory space: anywhere in 64 bit address space
       //
       MmioSize = Value & Mask;
-      PciWrite32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4), 0xFFFFFFFF);
-      Value    = PciRead32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4));
+      PciWrite32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4), 0xFFFFFFFF);
+      Value = PciRead32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4));
       //
       // Fix the length to support some spefic 64 bit BAR
       //
@@ -317,7 +320,7 @@ CalculateMmioSize (
       //
       // Calculate the size of 64bit bar
       //
-      MmioSize  |= LShiftU64 ((UINT64) Value, 32);
+      MmioSize |= LShiftU64 ((UINT64)Value, 32);
       MmioSize  = (~(MmioSize)) + 1;
       break;
     default:
@@ -326,14 +329,13 @@ CalculateMmioSize (
       //
       MmioSize = (~(Value & Mask)) + 1;
       break;
-  };
-
+  }
 
   //
   // Restore MMIO address
   //
-  PciWrite32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET), (UINT32)XhcMmioBase);
-  PciWrite32 (PCI_LIB_ADDRESS(Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4), (UINT32) (XhcMmioBase >> 32));
+  PciWrite32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET), (UINT32)XhcMmioBase);
+  PciWrite32 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_BASE_ADDRESSREG_OFFSET + 4), (UINT32)(XhcMmioBase >> 32));
 
   PciWrite16 (PCI_LIB_ADDRESS (Bus, Device, Function, PCI_COMMAND_OFFSET), Command | EFI_PCI_COMMAND_MEMORY_SPACE);
 
@@ -356,10 +358,10 @@ Usb3DebugPortLibDxeConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  EFI_SMM_BASE2_PROTOCOL        *SmmBase;
-  EFI_SMM_ACCESS2_PROTOCOL      *SmmAccess;
-  UINTN                         Size;
-  EFI_STATUS                    Status;
+  EFI_SMM_BASE2_PROTOCOL    *SmmBase;
+  EFI_SMM_ACCESS2_PROTOCOL  *SmmAccess;
+  UINTN                     Size;
+  EFI_STATUS                Status;
 
   //
   // Do real initialization here, because we need copy data from Hob to ACPINvs.
@@ -373,9 +375,9 @@ Usb3DebugPortLibDxeConstructor (
 
   if (gBS != NULL) {
     SmmBase = NULL;
-    Status = gBS->LocateProtocol (&gEfiSmmBase2ProtocolGuid, NULL, (VOID **)&SmmBase);
+    Status  = gBS->LocateProtocol (&gEfiSmmBase2ProtocolGuid, NULL, (VOID **)&SmmBase);
     if (!EFI_ERROR (Status)) {
-      SmmBase->InSmm(SmmBase, &mUsb3InSmm);
+      SmmBase->InSmm (SmmBase, &mUsb3InSmm);
     }
 
     if (mUsb3InSmm) {
@@ -383,7 +385,7 @@ Usb3DebugPortLibDxeConstructor (
       // Get SMRAM information
       //
       SmmAccess = NULL;
-      Status = gBS->LocateProtocol (&gEfiSmmAccess2ProtocolGuid, NULL, (VOID **)&SmmAccess);
+      Status    = gBS->LocateProtocol (&gEfiSmmAccess2ProtocolGuid, NULL, (VOID **)&SmmAccess);
       if (!EFI_ERROR (Status)) {
         Size = sizeof (mSmramCheckRanges);
 
@@ -406,25 +408,25 @@ Usb3DebugPortLibDxeConstructor (
   @return A pointer to the allocated buffer or NULL if allocation fails.
 
 **/
-VOID*
+VOID *
 AllocateAlignBuffer (
-  IN UINTN                    BufferSize
+  IN UINTN  BufferSize
   )
 {
-  VOID                    *Buf;
-  EFI_PHYSICAL_ADDRESS    Address;
-  EFI_STATUS              Status;
+  VOID                  *Buf;
+  EFI_PHYSICAL_ADDRESS  Address;
+  EFI_STATUS            Status;
 
   Buf = NULL;
 
   if (gBS != NULL) {
     Address = 0xFFFFFFFF;
-    Status = gBS->AllocatePages (
-                    AllocateMaxAddress,
-                    EfiACPIMemoryNVS,
-                    EFI_SIZE_TO_PAGES (BufferSize),
-                    &Address
-                    );
+    Status  = gBS->AllocatePages (
+                     AllocateMaxAddress,
+                     EfiACPIMemoryNVS,
+                     EFI_SIZE_TO_PAGES (BufferSize),
+                     &Address
+                     );
     if (!EFI_ERROR (Status)) {
       Buf = (VOID *)(UINTN)Address;
     }
@@ -451,4 +453,3 @@ IsAllocatePagesReady (
 
   return FALSE;
 }
-

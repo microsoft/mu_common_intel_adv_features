@@ -42,15 +42,15 @@
 EFI_STATUS
 EFIAPI
 BeepStatusCodeReportWorker (
-  IN CONST  EFI_PEI_SERVICES        **PeiServices,
-  IN EFI_STATUS_CODE_TYPE           CodeType,
-  IN EFI_STATUS_CODE_VALUE          Value,
-  IN UINT32                         Instance,
-  IN CONST EFI_GUID                 *CallerId,
-  IN CONST EFI_STATUS_CODE_DATA     *Data OPTIONAL
+  IN CONST  EFI_PEI_SERVICES     **PeiServices,
+  IN EFI_STATUS_CODE_TYPE        CodeType,
+  IN EFI_STATUS_CODE_VALUE       Value,
+  IN UINT32                      Instance,
+  IN CONST EFI_GUID              *CallerId,
+  IN CONST EFI_STATUS_CODE_DATA  *Data OPTIONAL
   )
 {
-  UINT32 BeepValue;
+  UINT32  BeepValue;
 
   BeepValue = GetBeepValueFromStatusCode (CodeType, Value);
   if (BeepValue != 0) {
@@ -75,12 +75,12 @@ BeepStatusCodeReportWorker (
 RETURN_STATUS
 EFIAPI
 PeiBeepStatusCodeHandlerLibConstructor (
-  IN       EFI_PEI_FILE_HANDLE       FileHandle,
-  IN CONST EFI_PEI_SERVICES          **PeiServices
+  IN       EFI_PEI_FILE_HANDLE  FileHandle,
+  IN CONST EFI_PEI_SERVICES     **PeiServices
   )
 {
-  EFI_STATUS                  Status;
-  EFI_PEI_RSC_HANDLER_PPI     *RscHandlerPpi;
+  EFI_STATUS               Status;
+  EFI_PEI_RSC_HANDLER_PPI  *RscHandlerPpi;
 
   if (!PcdGetBool (PcdStatusCodeUseBeep)) {
     return RETURN_SUCCESS;
@@ -90,7 +90,7 @@ PeiBeepStatusCodeHandlerLibConstructor (
              &gEfiPeiRscHandlerPpiGuid,
              0,
              NULL,
-             (VOID **) &RscHandlerPpi
+             (VOID **)&RscHandlerPpi
              );
   ASSERT_EFI_ERROR (Status);
 

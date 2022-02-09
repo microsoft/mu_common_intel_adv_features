@@ -19,28 +19,28 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 EFI_STATUS
 EFIAPI
-ChassisManufacturerFunction(
-  IN  EFI_SMBIOS_PROTOCOL   *Smbios
+ChassisManufacturerFunction (
+  IN  EFI_SMBIOS_PROTOCOL  *Smbios
   )
 {
-  UINTN                           ManuStrLen;
-  UINTN                           VerStrLen;
-  UINTN                           AssertTagStrLen;
-  UINTN                           SerialNumStrLen;
-  UINTN                           SKUNumberStrLen;
-  EFI_STATUS                      Status;
-  CHAR8                           *ManufacturerStr;
-  CHAR8                           *VersionStr;
-  CHAR8                           *SerialNumberStr;
-  CHAR8                           *AssertTagStr;
-  CHAR8                           *SKUNumberStr;
-  SMBIOS_TABLE_STRING             *SKUNumberPtr;
-  EFI_SMBIOS_HANDLE               SmbiosHandle;
-  SMBIOS_TABLE_TYPE3              *SmbiosRecord;
-  SMBIOS_TABLE_TYPE3              *PcdSmbiosRecord;
-  UINTN                           SourceSize;
-  UINTN                           TotalSize;
-  UINTN                           StringOffset;
+  UINTN                ManuStrLen;
+  UINTN                VerStrLen;
+  UINTN                AssertTagStrLen;
+  UINTN                SerialNumStrLen;
+  UINTN                SKUNumberStrLen;
+  EFI_STATUS           Status;
+  CHAR8                *ManufacturerStr;
+  CHAR8                *VersionStr;
+  CHAR8                *SerialNumberStr;
+  CHAR8                *AssertTagStr;
+  CHAR8                *SKUNumberStr;
+  SMBIOS_TABLE_STRING  *SKUNumberPtr;
+  EFI_SMBIOS_HANDLE    SmbiosHandle;
+  SMBIOS_TABLE_TYPE3   *SmbiosRecord;
+  SMBIOS_TABLE_TYPE3   *PcdSmbiosRecord;
+  UINTN                SourceSize;
+  UINTN                TotalSize;
+  UINTN                StringOffset;
 
   PcdSmbiosRecord = PcdGetPtr (PcdSmbiosType3SystemEnclosureChassis);
 
@@ -48,14 +48,14 @@ ChassisManufacturerFunction(
   // Get ChassisManufacturer String.
   //
   ManufacturerStr = PcdGetPtr (PcdSmbiosType3StringManufacturer);
-  ManuStrLen = AsciiStrLen (ManufacturerStr);
+  ManuStrLen      = AsciiStrLen (ManufacturerStr);
   ASSERT (ManuStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
   //
   // Get ChassisVersion String.
   //
   VersionStr = PcdGetPtr (PcdSmbiosType3StringVersion);
-  VerStrLen = AsciiStrLen (VersionStr);
+  VerStrLen  = AsciiStrLen (VersionStr);
   ASSERT (VerStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
   //
@@ -68,23 +68,23 @@ ChassisManufacturerFunction(
   //
   // Get ChassisAssetTag String.
   //
-  AssertTagStr = PcdGetPtr (PcdSmbiosType3StringAssetTag);
+  AssertTagStr    = PcdGetPtr (PcdSmbiosType3StringAssetTag);
   AssertTagStrLen = AsciiStrLen (AssertTagStr);
   ASSERT (AssertTagStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
   //
   // Get ChassisSKUNumber String.
   //
-  SKUNumberStr = PcdGetPtr (PcdSmbiosType3StringSKUNumber);
+  SKUNumberStr    = PcdGetPtr (PcdSmbiosType3StringSKUNumber);
   SKUNumberStrLen = AsciiStrLen (SKUNumberStr);
   ASSERT (SKUNumberStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
   //
   // Two zeros following the last string.
   //
-  SourceSize = PcdGetSize(PcdSmbiosType3SystemEnclosureChassis);
-  TotalSize = SourceSize + sizeof(SMBIOS_TABLE_STRING) + ManuStrLen + 1 + VerStrLen + 1 + SerialNumStrLen + 1 + AssertTagStrLen + 1 + SKUNumberStrLen + 1 + 1;
-  SmbiosRecord = AllocateZeroPool(TotalSize);
+  SourceSize   = PcdGetSize (PcdSmbiosType3SystemEnclosureChassis);
+  TotalSize    = SourceSize + sizeof (SMBIOS_TABLE_STRING) + ManuStrLen + 1 + VerStrLen + 1 + SerialNumStrLen + 1 + AssertTagStrLen + 1 + SKUNumberStrLen + 1 + 1;
+  SmbiosRecord = AllocateZeroPool (TotalSize);
   if (SmbiosRecord == NULL) {
     ASSERT_EFI_ERROR (EFI_OUT_OF_RESOURCES);
     return EFI_OUT_OF_RESOURCES;
@@ -92,15 +92,16 @@ ChassisManufacturerFunction(
 
   CopyMem (SmbiosRecord, PcdSmbiosRecord, SourceSize);
 
-  SmbiosRecord->Hdr.Type = EFI_SMBIOS_TYPE_SYSTEM_ENCLOSURE;
-  SmbiosRecord->Hdr.Length = OFFSET_OF (SMBIOS_TABLE_TYPE3, ContainedElements) + sizeof(SMBIOS_TABLE_STRING);
+  SmbiosRecord->Hdr.Type   = EFI_SMBIOS_TYPE_SYSTEM_ENCLOSURE;
+  SmbiosRecord->Hdr.Length = OFFSET_OF (SMBIOS_TABLE_TYPE3, ContainedElements) + sizeof (SMBIOS_TABLE_STRING);
   if (PcdSmbiosRecord->ContainedElementCount >= 1) {
     SmbiosRecord->Hdr.Length += PcdSmbiosRecord->ContainedElementCount * PcdSmbiosRecord->ContainedElementRecordLength;
   }
+
   SmbiosRecord->Hdr.Handle = 0;
 
   if ((PcdSmbiosRecord->ContainedElementCount == 0) || (SourceSize < (UINTN)SmbiosRecord + SmbiosRecord->Hdr.Length)) {
-    SKUNumberPtr = (SMBIOS_TABLE_STRING *)((UINTN)SmbiosRecord + SmbiosRecord->Hdr.Length - sizeof(SMBIOS_TABLE_STRING));
+    SKUNumberPtr  = (SMBIOS_TABLE_STRING *)((UINTN)SmbiosRecord + SmbiosRecord->Hdr.Length - sizeof (SMBIOS_TABLE_STRING));
     *SKUNumberPtr = 5;
   }
 
@@ -118,8 +119,8 @@ ChassisManufacturerFunction(
   //
   // Now we have got the full smbios record, call smbios protocol to add this record.
   //
-  Status = AddSmbiosRecord (Smbios, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER *) SmbiosRecord);
+  Status = AddSmbiosRecord (Smbios, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER *)SmbiosRecord);
 
-  FreePool(SmbiosRecord);
+  FreePool (SmbiosRecord);
   return Status;
 }

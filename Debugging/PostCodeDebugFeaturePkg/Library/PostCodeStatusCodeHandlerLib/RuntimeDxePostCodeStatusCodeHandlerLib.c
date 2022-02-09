@@ -18,9 +18,9 @@
 #include <Library/PostCodeMapLib.h>
 #include <Library/PostCodeLib.h>
 
-EFI_RSC_HANDLER_PROTOCOL  *mPostCodeRscHandlerProtocol       = NULL;
-EFI_EVENT                 mPostCodeExitBootServicesEvent     = NULL;
-BOOLEAN                   mPostCodeRegisted                  = FALSE;
+EFI_RSC_HANDLER_PROTOCOL  *mPostCodeRscHandlerProtocol   = NULL;
+EFI_EVENT                 mPostCodeExitBootServicesEvent = NULL;
+BOOLEAN                   mPostCodeRegisted              = FALSE;
 
 /**
   Convert status code value and write data to post code.
@@ -47,14 +47,14 @@ BOOLEAN                   mPostCodeRegisted                  = FALSE;
 EFI_STATUS
 EFIAPI
 PostCodeStatusCodeReportWorker (
-  IN EFI_STATUS_CODE_TYPE           CodeType,
-  IN EFI_STATUS_CODE_VALUE          Value,
-  IN UINT32                         Instance,
-  IN EFI_GUID                       *CallerId,
-  IN EFI_STATUS_CODE_DATA           *Data OPTIONAL
+  IN EFI_STATUS_CODE_TYPE   CodeType,
+  IN EFI_STATUS_CODE_VALUE  Value,
+  IN UINT32                 Instance,
+  IN EFI_GUID               *CallerId,
+  IN EFI_STATUS_CODE_DATA   *Data OPTIONAL
   )
 {
-  UINT32 PostCodeValue;
+  UINT32  PostCodeValue;
 
   PostCodeValue = GetPostCodeFromStatusCode (CodeType, Value);
   if (PostCodeValue != 0) {
@@ -77,16 +77,14 @@ PostCodeStatusCodeReportWorker (
 VOID
 EFIAPI
 UnregisterPostCodeBootTimeHandlers (
-  IN EFI_EVENT        Event,
-  IN VOID             *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   )
 {
   if (mPostCodeRegisted) {
     mPostCodeRscHandlerProtocol->Unregister (PostCodeStatusCodeReportWorker);
   }
 }
-
-
 
 /**
   Register status code callback function only when Report Status Code protocol
@@ -100,16 +98,16 @@ UnregisterPostCodeBootTimeHandlers (
 VOID
 EFIAPI
 RegisterPostCodeBootTimeHandlers (
-  IN EFI_EVENT        Event,
-  IN VOID             *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   )
 {
-  EFI_STATUS                Status;
+  EFI_STATUS  Status;
 
   Status = gBS->LocateProtocol (
                   &gEfiRscHandlerProtocolGuid,
                   NULL,
-                  (VOID **) &mPostCodeRscHandlerProtocol
+                  (VOID **)&mPostCodeRscHandlerProtocol
                   );
   ASSERT_EFI_ERROR (Status);
 
@@ -143,13 +141,13 @@ RegisterPostCodeBootTimeHandlers (
 EFI_STATUS
 EFIAPI
 RuntimeDxePostCodeStatusCodeHandlerLibConstructor (
-  IN EFI_HANDLE           ImageHandle,
-  IN EFI_SYSTEM_TABLE     *SystemTable
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  EFI_STATUS                Status;
-  EFI_EVENT                 RegisterStatusCodeHandlerEvent;
-  VOID                      *Registration;
+  EFI_STATUS  Status;
+  EFI_EVENT   RegisterStatusCodeHandlerEvent;
+  VOID        *Registration;
 
   if (!PcdGetBool (PcdStatusCodeUsePostCode)) {
     return EFI_SUCCESS;
@@ -158,7 +156,7 @@ RuntimeDxePostCodeStatusCodeHandlerLibConstructor (
   Status = gBS->LocateProtocol (
                   &gEfiRscHandlerProtocolGuid,
                   NULL,
-                  (VOID **) &mPostCodeRscHandlerProtocol
+                  (VOID **)&mPostCodeRscHandlerProtocol
                   );
 
   if (!EFI_ERROR (Status)) {

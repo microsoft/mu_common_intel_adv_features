@@ -48,13 +48,12 @@ Usb3DebugPortInitialize (
 UINTN
 EFIAPI
 Usb3DebugPortWrite (
-  IN UINT8     *Buffer,
-  IN UINTN     NumberOfBytes
+  IN UINT8  *Buffer,
+  IN UINTN  NumberOfBytes
   )
 {
   return 0;
 }
-
 
 /**
   Read data from USB3 debug port and save the datas in buffer.
@@ -75,8 +74,8 @@ Usb3DebugPortWrite (
 UINTN
 EFIAPI
 Usb3DebugPortRead (
-  OUT UINT8   *Buffer,
-  IN  UINTN   NumberOfBytes
+  OUT UINT8  *Buffer,
+  IN  UINTN  NumberOfBytes
   )
 {
   return 0;

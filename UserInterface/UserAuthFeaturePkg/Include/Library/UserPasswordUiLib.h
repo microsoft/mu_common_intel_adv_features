@@ -31,7 +31,7 @@ UiDoPasswordAuthentication (
 EFI_STATUS
 EFIAPI
 UiSetPasswordVerificationPolicy (
-  IN BOOLEAN    NeedReVerify
+  IN BOOLEAN  NeedReVerify
   );
 
 #endif

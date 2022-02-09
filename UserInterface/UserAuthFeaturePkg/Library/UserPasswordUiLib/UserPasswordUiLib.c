@@ -30,51 +30,54 @@
 
   @return Communicate buffer.
 **/
-VOID*
+VOID *
 UserPasswordUiLibInitCommunicateBuffer (
-  OUT     VOID                              **DataPtr OPTIONAL,
-  IN      UINTN                             DataSize,
-  IN      UINTN                             Function
+  OUT     VOID   **DataPtr OPTIONAL,
+  IN      UINTN  DataSize,
+  IN      UINTN  Function
   )
 {
-  EFI_SMM_COMMUNICATE_HEADER                *SmmCommunicateHeader;
-  SMM_PASSWORD_COMMUNICATE_HEADER           *SmmPasswordFunctionHeader;
-  VOID                                      *Buffer;
-  EDKII_PI_SMM_COMMUNICATION_REGION_TABLE   *SmmCommRegionTable;
-  EFI_MEMORY_DESCRIPTOR                     *SmmCommMemRegion;
-  UINTN                                     Index;
-  UINTN                                     Size;
-  EFI_STATUS                                Status;
+  EFI_SMM_COMMUNICATE_HEADER               *SmmCommunicateHeader;
+  SMM_PASSWORD_COMMUNICATE_HEADER          *SmmPasswordFunctionHeader;
+  VOID                                     *Buffer;
+  EDKII_PI_SMM_COMMUNICATION_REGION_TABLE  *SmmCommRegionTable;
+  EFI_MEMORY_DESCRIPTOR                    *SmmCommMemRegion;
+  UINTN                                    Index;
+  UINTN                                    Size;
+  EFI_STATUS                               Status;
 
   Buffer = NULL;
   Status = EfiGetSystemConfigurationTable (
              &gEdkiiPiSmmCommunicationRegionTableGuid,
-             (VOID **) &SmmCommRegionTable
+             (VOID **)&SmmCommRegionTable
              );
   if (EFI_ERROR (Status)) {
     return NULL;
   }
+
   ASSERT (SmmCommRegionTable != NULL);
-  SmmCommMemRegion = (EFI_MEMORY_DESCRIPTOR *) (SmmCommRegionTable + 1);
-  Size = 0;
+  SmmCommMemRegion = (EFI_MEMORY_DESCRIPTOR *)(SmmCommRegionTable + 1);
+  Size             = 0;
   for (Index = 0; Index < SmmCommRegionTable->NumberOfEntries; Index++) {
     if (SmmCommMemRegion->Type == EfiConventionalMemory) {
-      Size = EFI_PAGES_TO_SIZE ((UINTN) SmmCommMemRegion->NumberOfPages);
+      Size = EFI_PAGES_TO_SIZE ((UINTN)SmmCommMemRegion->NumberOfPages);
       if (Size >= (DataSize + OFFSET_OF (EFI_SMM_COMMUNICATE_HEADER, Data) + sizeof (SMM_PASSWORD_COMMUNICATE_HEADER))) {
         break;
       }
     }
-    SmmCommMemRegion = (EFI_MEMORY_DESCRIPTOR *) ((UINT8 *) SmmCommMemRegion + SmmCommRegionTable->DescriptorSize);
+
+    SmmCommMemRegion = (EFI_MEMORY_DESCRIPTOR *)((UINT8 *)SmmCommMemRegion + SmmCommRegionTable->DescriptorSize);
   }
+
   ASSERT (Index < SmmCommRegionTable->NumberOfEntries);
 
-  Buffer = (VOID*)(UINTN)SmmCommMemRegion->PhysicalStart;
+  Buffer = (VOID *)(UINTN)SmmCommMemRegion->PhysicalStart;
   ASSERT (Buffer != NULL);
-  SmmCommunicateHeader = (EFI_SMM_COMMUNICATE_HEADER *) Buffer;
+  SmmCommunicateHeader = (EFI_SMM_COMMUNICATE_HEADER *)Buffer;
   CopyGuid (&SmmCommunicateHeader->HeaderGuid, &gUserAuthenticationGuid);
   SmmCommunicateHeader->MessageLength = DataSize + sizeof (SMM_PASSWORD_COMMUNICATE_HEADER);
 
-  SmmPasswordFunctionHeader = (SMM_PASSWORD_COMMUNICATE_HEADER *) SmmCommunicateHeader->Data;
+  SmmPasswordFunctionHeader = (SMM_PASSWORD_COMMUNICATE_HEADER *)SmmCommunicateHeader->Data;
   ZeroMem (SmmPasswordFunctionHeader, DataSize + sizeof (SMM_PASSWORD_COMMUNICATE_HEADER));
   SmmPasswordFunctionHeader->Function = Function;
   if (DataPtr != NULL) {
@@ -96,20 +99,20 @@ UserPasswordUiLibInitCommunicateBuffer (
 **/
 EFI_STATUS
 UserPasswordUiLibSendCommunicateBuffer (
-  IN      VOID                              *Buffer,
-  IN      UINTN                             DataSize
+  IN      VOID   *Buffer,
+  IN      UINTN  DataSize
   )
 {
-  EFI_STATUS                                Status;
-  UINTN                                     CommSize;
-  EFI_SMM_COMMUNICATE_HEADER                *SmmCommunicateHeader;
-  SMM_PASSWORD_COMMUNICATE_HEADER           *SmmPasswordFunctionHeader;
-  EFI_SMM_COMMUNICATION_PROTOCOL            *SmmCommunication;
+  EFI_STATUS                       Status;
+  UINTN                            CommSize;
+  EFI_SMM_COMMUNICATE_HEADER       *SmmCommunicateHeader;
+  SMM_PASSWORD_COMMUNICATE_HEADER  *SmmPasswordFunctionHeader;
+  EFI_SMM_COMMUNICATION_PROTOCOL   *SmmCommunication;
 
   //
   // Locates SMM Communication protocol.
   //
-  Status = gBS->LocateProtocol (&gEfiSmmCommunicationProtocolGuid, NULL, (VOID **) &SmmCommunication);
+  Status = gBS->LocateProtocol (&gEfiSmmCommunicationProtocolGuid, NULL, (VOID **)&SmmCommunication);
   ASSERT_EFI_ERROR (Status);
 
   CommSize = DataSize + OFFSET_OF (EFI_SMM_COMMUNICATE_HEADER, Data) + sizeof (SMM_PASSWORD_COMMUNICATE_HEADER);
@@ -117,7 +120,7 @@ UserPasswordUiLibSendCommunicateBuffer (
   Status = SmmCommunication->Communicate (SmmCommunication, Buffer, &CommSize);
   ASSERT_EFI_ERROR (Status);
 
-  SmmCommunicateHeader = (EFI_SMM_COMMUNICATE_HEADER *) Buffer;
+  SmmCommunicateHeader      = (EFI_SMM_COMMUNICATE_HEADER *)Buffer;
   SmmPasswordFunctionHeader = (SMM_PASSWORD_COMMUNICATE_HEADER *)SmmCommunicateHeader->Data;
   return SmmPasswordFunctionHeader->ReturnStatus;
 }
@@ -133,15 +136,15 @@ UserPasswordUiLibSendCommunicateBuffer (
 EFI_STATUS
 EFIAPI
 UiSetPasswordVerificationPolicy (
-  IN BOOLEAN    NeedReVerify
+  IN BOOLEAN  NeedReVerify
   )
 {
-  VOID                                      *Buffer;
-  SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY    *SetVerifyPolicy;
+  VOID                                    *Buffer;
+  SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY  *SetVerifyPolicy;
 
   Buffer = UserPasswordUiLibInitCommunicateBuffer (
-             (VOID**)&SetVerifyPolicy,
-             sizeof(*SetVerifyPolicy),
+             (VOID **)&SetVerifyPolicy,
+             sizeof (*SetVerifyPolicy),
              SMM_PASSWORD_FUNCTION_SET_VERIFY_POLICY
              );
   if (Buffer == NULL) {
@@ -150,7 +153,7 @@ UiSetPasswordVerificationPolicy (
 
   SetVerifyPolicy->NeedReVerify = NeedReVerify;
 
-  return UserPasswordUiLibSendCommunicateBuffer (Buffer, sizeof(*SetVerifyPolicy));
+  return UserPasswordUiLibSendCommunicateBuffer (Buffer, sizeof (*SetVerifyPolicy));
 }
 
 /**
@@ -162,17 +165,17 @@ UiSetPasswordVerificationPolicy (
 **/
 EFI_STATUS
 GetUserInput (
-  IN     CHAR16      *PopUpString,
-  IN OUT CHAR16      *UserInput,
-  IN     UINTN       UserInputMaxLen
+  IN     CHAR16  *PopUpString,
+  IN OUT CHAR16  *UserInput,
+  IN     UINTN   UserInputMaxLen
   )
 {
-  EFI_INPUT_KEY                InputKey;
-  UINTN                        InputLength;
-  CHAR16                       *Mask;
+  EFI_INPUT_KEY  InputKey;
+  UINTN          InputLength;
+  CHAR16         *Mask;
 
   UserInput[0] = 0;
-  Mask = AllocateZeroPool ((UserInputMaxLen + 1) * sizeof(CHAR16));
+  Mask         = AllocateZeroPool ((UserInputMaxLen + 1) * sizeof (CHAR16));
   if (Mask == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
@@ -183,6 +186,7 @@ GetUserInput (
     if (InputLength < UserInputMaxLen) {
       Mask[InputLength] = L'_';
     }
+
     CreatePopUp (
       EFI_LIGHTGRAY | EFI_BACKGROUND_BLUE,
       &InputKey,
@@ -195,7 +199,7 @@ GetUserInput (
       //
       // Check whether finish inputing password.
       //
-      if (InputKey.UnicodeChar == CHAR_CARRIAGE_RETURN && InputLength > 0) {
+      if ((InputKey.UnicodeChar == CHAR_CARRIAGE_RETURN) && (InputLength > 0)) {
         //
         // Add the null terminator.
         //
@@ -204,7 +208,8 @@ GetUserInput (
       } else if ((InputKey.UnicodeChar == CHAR_NULL) ||
                  (InputKey.UnicodeChar == CHAR_LINEFEED) ||
                  (InputKey.UnicodeChar == CHAR_CARRIAGE_RETURN)
-                ) {
+                 )
+      {
         continue;
       } else {
         //
@@ -213,7 +218,7 @@ GetUserInput (
         if (InputKey.UnicodeChar == CHAR_BACKSPACE) {
           if (InputLength > 0) {
             UserInput[InputLength] = 0;
-            Mask[InputLength] = 0;
+            Mask[InputLength]      = 0;
             InputLength--;
           }
         } else {
@@ -221,16 +226,18 @@ GetUserInput (
             Mask[InputLength] = 0;
             continue;
           }
+
           //
           // add Next key entry
           //
           UserInput[InputLength] = InputKey.UnicodeChar;
-          Mask[InputLength] = L'*';
+          Mask[InputLength]      = L'*';
           InputLength++;
         }
       }
     }
   }
+
   FreePool (Mask);
   return EFI_SUCCESS;
 }
@@ -270,7 +277,7 @@ ForceSystemReset (
 {
   MessageBox (L"Password retry count reach, reset system!");
   gRT->ResetSystem (EfiResetCold, EFI_SUCCESS, 0, NULL);
-  CpuDeadLoop();
+  CpuDeadLoop ();
 }
 
 /**
@@ -283,8 +290,8 @@ PrintSetPasswordStatus (
   IN EFI_STATUS  ReturnStatus
   )
 {
-  CHAR16         *DisplayString;
-  CHAR16         *DisplayString2;
+  CHAR16  *DisplayString;
+  CHAR16  *DisplayString2;
 
   EFI_INPUT_KEY  Key;
 
@@ -337,23 +344,23 @@ PrintSetPasswordStatus (
 **/
 EFI_STATUS
 GetPasswordVerificationPolicy (
-  OUT SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY    *VerifyPolicy
+  OUT SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY  *VerifyPolicy
   )
 {
-  EFI_STATUS                                    Status;
-  VOID                                          *Buffer;
-  SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY        *TempVerifyPolicy;
+  EFI_STATUS                              Status;
+  VOID                                    *Buffer;
+  SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY  *TempVerifyPolicy;
 
   Buffer = UserPasswordUiLibInitCommunicateBuffer (
-             (VOID**)&TempVerifyPolicy,
-             sizeof(*TempVerifyPolicy),
+             (VOID **)&TempVerifyPolicy,
+             sizeof (*TempVerifyPolicy),
              SMM_PASSWORD_FUNCTION_GET_VERIFY_POLICY
              );
   if (Buffer == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
 
-  Status = UserPasswordUiLibSendCommunicateBuffer (Buffer, sizeof(*TempVerifyPolicy));
+  Status = UserPasswordUiLibSendCommunicateBuffer (Buffer, sizeof (*TempVerifyPolicy));
   if (!EFI_ERROR (Status)) {
     CopyMem (VerifyPolicy, TempVerifyPolicy, sizeof (SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY));
   }
@@ -372,8 +379,8 @@ WasPasswordVerified (
   VOID
   )
 {
-  EFI_STATUS                                Status;
-  VOID                                      *Buffer;
+  EFI_STATUS  Status;
+  VOID        *Buffer;
 
   Buffer = UserPasswordUiLibInitCommunicateBuffer (
              NULL,
@@ -403,13 +410,13 @@ RequireUserPassword (
   VOID
   )
 {
-  EFI_STATUS                                Status;
-  CHAR16                                    UserInputPw[PASSWORD_MAX_SIZE];
-  CHAR16                                    *PopUpString;
-  SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY    VerifyPolicy;
+  EFI_STATUS                              Status;
+  CHAR16                                  UserInputPw[PASSWORD_MAX_SIZE];
+  CHAR16                                  *PopUpString;
+  SMM_PASSWORD_COMMUNICATE_VERIFY_POLICY  VerifyPolicy;
 
   Status = EFI_SUCCESS;
-  ZeroMem(UserInputPw, sizeof(UserInputPw));
+  ZeroMem (UserInputPw, sizeof (UserInputPw));
 
   if (!IsPasswordInstalled ()) {
     return FALSE;
@@ -417,7 +424,7 @@ RequireUserPassword (
 
   Status = GetPasswordVerificationPolicy (&VerifyPolicy);
   if (!EFI_ERROR (Status)) {
-    if (WasPasswordVerified() && (!VerifyPolicy.NeedReVerify)) {
+    if (WasPasswordVerified () && (!VerifyPolicy.NeedReVerify)) {
       DEBUG ((DEBUG_INFO, "Password was verified and Re-verify is not needed\n"));
       return TRUE;
     }
@@ -426,25 +433,27 @@ RequireUserPassword (
   PopUpString = L"Please input admin password";
 
   while (TRUE) {
-    gST->ConOut->ClearScreen(gST->ConOut);
+    gST->ConOut->ClearScreen (gST->ConOut);
     GetUserInput (PopUpString, UserInputPw, PASSWORD_MAX_SIZE - 1);
 
-    Status = VerifyPassword (UserInputPw, StrSize(UserInputPw));
-    if (!EFI_ERROR(Status)) {
+    Status = VerifyPassword (UserInputPw, StrSize (UserInputPw));
+    if (!EFI_ERROR (Status)) {
       break;
     }
+
     if (Status == EFI_ACCESS_DENIED) {
       //
       // Password retry count reach.
       //
       ForceSystemReset ();
     }
+
     MessageBox (L"Incorrect password!");
   }
 
-  ZeroMem(UserInputPw, sizeof(UserInputPw));
+  ZeroMem (UserInputPw, sizeof (UserInputPw));
 
-  gST->ConOut->ClearScreen(gST->ConOut);
+  gST->ConOut->ClearScreen (gST->ConOut);
 
   return TRUE;
 }
@@ -458,40 +467,40 @@ SetUserPassword (
   VOID
   )
 {
-  EFI_STATUS                   Status;
-  CHAR16                       UserInputPw[PASSWORD_MAX_SIZE];
-  CHAR16                       TmpPassword[PASSWORD_MAX_SIZE];
-  CHAR16                       *PopUpString;
-  CHAR16                       *PopUpString2;
+  EFI_STATUS  Status;
+  CHAR16      UserInputPw[PASSWORD_MAX_SIZE];
+  CHAR16      TmpPassword[PASSWORD_MAX_SIZE];
+  CHAR16      *PopUpString;
+  CHAR16      *PopUpString2;
 
-  ZeroMem(UserInputPw, sizeof(UserInputPw));
-  ZeroMem(TmpPassword, sizeof(TmpPassword));
+  ZeroMem (UserInputPw, sizeof (UserInputPw));
+  ZeroMem (TmpPassword, sizeof (TmpPassword));
 
   PopUpString = L"Please set admin password";
 
   while (TRUE) {
-    gST->ConOut->ClearScreen(gST->ConOut);
+    gST->ConOut->ClearScreen (gST->ConOut);
     GetUserInput (PopUpString, UserInputPw, PASSWORD_MAX_SIZE - 1);
 
     PopUpString2 = L"Please confirm your new password";
-    gST->ConOut->ClearScreen(gST->ConOut);
+    gST->ConOut->ClearScreen (gST->ConOut);
     GetUserInput (PopUpString2, TmpPassword, PASSWORD_MAX_SIZE - 1);
     if (StrCmp (TmpPassword, UserInputPw) != 0) {
       MessageBox (L"Password are not the same!");
       continue;
     }
 
-    Status = SetPassword (UserInputPw, StrSize(UserInputPw), NULL, 0);
+    Status = SetPassword (UserInputPw, StrSize (UserInputPw), NULL, 0);
     PrintSetPasswordStatus (Status);
-    if (!EFI_ERROR(Status)) {
+    if (!EFI_ERROR (Status)) {
       break;
     }
   }
 
-  ZeroMem(UserInputPw, sizeof(UserInputPw));
-  ZeroMem(TmpPassword, sizeof(TmpPassword));
+  ZeroMem (UserInputPw, sizeof (UserInputPw));
+  ZeroMem (TmpPassword, sizeof (TmpPassword));
 
-  gST->ConOut->ClearScreen(gST->ConOut);
+  gST->ConOut->ClearScreen (gST->ConOut);
 }
 
 /**
@@ -505,18 +514,17 @@ UiDoPasswordAuthentication (
   VOID
   )
 {
-  BOOLEAN   PasswordSet;
+  BOOLEAN  PasswordSet;
 
   PasswordSet = RequireUserPassword ();
   if (PasswordSet) {
     DEBUG ((DEBUG_INFO, "Welcome Admin!\n"));
   } else {
     DEBUG ((DEBUG_INFO, "Admin password is not set!\n"));
-    if (NeedEnrollPassword()) {
+    if (NeedEnrollPassword ()) {
       SetUserPassword ();
     }
   }
 
   return EFI_SUCCESS;
 }
-

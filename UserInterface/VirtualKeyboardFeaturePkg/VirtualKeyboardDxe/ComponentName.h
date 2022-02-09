@@ -38,9 +38,9 @@
 EFI_STATUS
 EFIAPI
 VirtualKeyboardComponentNameGetDriverName (
-  IN  EFI_COMPONENT_NAME_PROTOCOL *This,
-  IN  CHAR8                       *Language,
-  OUT CHAR16                      **DriverName
+  IN  EFI_COMPONENT_NAME_PROTOCOL  *This,
+  IN  CHAR8                        *Language,
+  OUT CHAR16                       **DriverName
   );
 
 /**
@@ -87,9 +87,10 @@ EFI_STATUS
 EFIAPI
 VirtualKeyboardComponentNameGetControllerName (
   IN  EFI_COMPONENT_NAME_PROTOCOL *This,
-  IN  EFI_HANDLE                  ControllerHandle,
-  IN  EFI_HANDLE                  ChildHandle, OPTIONAL
+  IN  EFI_HANDLE ControllerHandle,
+  IN  EFI_HANDLE ChildHandle, OPTIONAL
   IN  CHAR8                       *Language,
   OUT CHAR16                      **ControllerName
   );
+
 #endif
