@@ -24,8 +24,8 @@
 EFI_STATUS
 EFIAPI
 VerifyPassword (
-  IN CHAR16         *Password,
-  IN UINTN          PasswordSize
+  IN CHAR16  *Password,
+  IN UINTN   PasswordSize
   );
 
 /**
@@ -49,9 +49,9 @@ VerifyPassword (
 EFI_STATUS
 EFIAPI
 SetPassword (
-  IN CHAR16         *NewPassword,     OPTIONAL
+  IN CHAR16 *NewPassword, OPTIONAL
   IN UINTN          NewPasswordSize,
-  IN CHAR16         *OldPassword,     OPTIONAL
+  IN CHAR16         *OldPassword, OPTIONAL
   IN UINTN          OldPasswordSize
   );
 

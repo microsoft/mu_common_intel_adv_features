@@ -17,9 +17,9 @@
 #include <Library/BeepMapLib.h>
 #include <Library/BeepLib.h>
 
-EFI_RSC_HANDLER_PROTOCOL  *mBeepRscHandlerProtocol       = NULL;
-EFI_EVENT                 mBeepExitBootServicesEvent     = NULL;
-BOOLEAN                   mBeepRegistered                = FALSE;
+EFI_RSC_HANDLER_PROTOCOL  *mBeepRscHandlerProtocol   = NULL;
+EFI_EVENT                 mBeepExitBootServicesEvent = NULL;
+BOOLEAN                   mBeepRegistered            = FALSE;
 
 /**
   Convert status code value to the times of beep.
@@ -46,14 +46,14 @@ BOOLEAN                   mBeepRegistered                = FALSE;
 EFI_STATUS
 EFIAPI
 BeepStatusCodeReportWorker (
-  IN EFI_STATUS_CODE_TYPE           CodeType,
-  IN EFI_STATUS_CODE_VALUE          Value,
-  IN UINT32                         Instance,
-  IN EFI_GUID                       *CallerId,
-  IN EFI_STATUS_CODE_DATA           *Data OPTIONAL
+  IN EFI_STATUS_CODE_TYPE   CodeType,
+  IN EFI_STATUS_CODE_VALUE  Value,
+  IN UINT32                 Instance,
+  IN EFI_GUID               *CallerId,
+  IN EFI_STATUS_CODE_DATA   *Data OPTIONAL
   )
 {
-  UINT32 BeepValue;
+  UINT32  BeepValue;
 
   BeepValue = GetBeepValueFromStatusCode (CodeType, Value);
   if (BeepValue != 0) {
@@ -75,8 +75,8 @@ BeepStatusCodeReportWorker (
 VOID
 EFIAPI
 UnregisterBeepBootTimeHandlers (
-  IN EFI_EVENT        Event,
-  IN VOID             *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   )
 {
   if (mBeepRegistered) {
@@ -96,16 +96,16 @@ UnregisterBeepBootTimeHandlers (
 VOID
 EFIAPI
 RegisterBeepBootTimeHandlers (
-  IN EFI_EVENT        Event,
-  IN VOID             *Context
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
   )
 {
-  EFI_STATUS                Status;
+  EFI_STATUS  Status;
 
   Status = gBS->LocateProtocol (
                   &gEfiRscHandlerProtocolGuid,
                   NULL,
-                  (VOID **) &mBeepRscHandlerProtocol
+                  (VOID **)&mBeepRscHandlerProtocol
                   );
   ASSERT_EFI_ERROR (Status);
 
@@ -139,13 +139,13 @@ RegisterBeepBootTimeHandlers (
 EFI_STATUS
 EFIAPI
 RuntimeDxeBeepStatusCodeHandlerLibConstructor (
-  IN EFI_HANDLE           ImageHandle,
-  IN EFI_SYSTEM_TABLE     *SystemTable
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  EFI_STATUS                Status;
-  EFI_EVENT                 RegisterStatusCodeHandlerEvent;
-  VOID                      *Registration;
+  EFI_STATUS  Status;
+  EFI_EVENT   RegisterStatusCodeHandlerEvent;
+  VOID        *Registration;
 
   if (!PcdGetBool (PcdStatusCodeUseBeep)) {
     return EFI_SUCCESS;
@@ -154,7 +154,7 @@ RuntimeDxeBeepStatusCodeHandlerLibConstructor (
   Status = gBS->LocateProtocol (
                   &gEfiRscHandlerProtocolGuid,
                   NULL,
-                  (VOID **) &mBeepRscHandlerProtocol
+                  (VOID **)&mBeepRscHandlerProtocol
                   );
 
   if (!EFI_ERROR (Status)) {

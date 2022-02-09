@@ -9,7 +9,6 @@
 #ifndef _USER_AUTHENTICATION_DXE_H_
 #define _USER_AUTHENTICATION_DXE_H_
 
-
 #include <Protocol/ReportStatusCodeHandler.h>
 #include <Protocol/HiiConfigAccess.h>
 
@@ -35,11 +34,11 @@ extern UINT8  UserAuthenticationDxeVfrBin[];
 extern UINT8  UserAuthentication2DxeStrings[];
 
 typedef struct {
-  EFI_HII_CONFIG_ACCESS_PROTOCOL       ConfigAccess;
-  EFI_HANDLE                           DriverHandle;
-  EFI_HII_HANDLE                       HiiHandle;
-  UINT8                                PasswordState;
-  CHAR16                               OldPassword[PASSWORD_MAX_SIZE];
+  EFI_HII_CONFIG_ACCESS_PROTOCOL    ConfigAccess;
+  EFI_HANDLE                        DriverHandle;
+  EFI_HII_HANDLE                    HiiHandle;
+  UINT8                             PasswordState;
+  CHAR16                            OldPassword[PASSWORD_MAX_SIZE];
 } USER_AUTHENTICATION_PRIVATE_DATA;
 
 #pragma pack(1)
@@ -47,8 +46,8 @@ typedef struct {
 /// HII specific Vendor Device Path definition.
 ///
 typedef struct {
-  VENDOR_DEVICE_PATH             VendorDevicePath;
-  EFI_DEVICE_PATH_PROTOCOL       End;
+  VENDOR_DEVICE_PATH          VendorDevicePath;
+  EFI_DEVICE_PATH_PROTOCOL    End;
 } HII_VENDOR_DEVICE_PATH;
 #pragma pack()
 

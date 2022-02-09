@@ -19,33 +19,33 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 EFI_STATUS
 EFIAPI
-BiosVendorFunction(
-  IN  EFI_SMBIOS_PROTOCOL   *Smbios
+BiosVendorFunction (
+  IN  EFI_SMBIOS_PROTOCOL  *Smbios
   )
 {
-  EFI_STATUS            Status;
-  CHAR8                 *VendorStr;
-  UINTN                 VendorStrLen;
-  CHAR8                 *VersionStr;
-  UINTN                 VerStrLen;
-  CHAR8                 *DateStr;
-  UINTN                 DateStrLen;
-  SMBIOS_TABLE_TYPE0    *SmbiosRecord;
-  SMBIOS_TABLE_TYPE0    *PcdSmbiosRecord;
-  EFI_SMBIOS_HANDLE     SmbiosHandle;
-  UINTN                 StringOffset;
+  EFI_STATUS          Status;
+  CHAR8               *VendorStr;
+  UINTN               VendorStrLen;
+  CHAR8               *VersionStr;
+  UINTN               VerStrLen;
+  CHAR8               *DateStr;
+  UINTN               DateStrLen;
+  SMBIOS_TABLE_TYPE0  *SmbiosRecord;
+  SMBIOS_TABLE_TYPE0  *PcdSmbiosRecord;
+  EFI_SMBIOS_HANDLE   SmbiosHandle;
+  UINTN               StringOffset;
 
   PcdSmbiosRecord = PcdGetPtr (PcdSmbiosType0BiosInformation);
 
-  VendorStr = PcdGetPtr (PcdSmbiosType0StringVendor);
+  VendorStr    = PcdGetPtr (PcdSmbiosType0StringVendor);
   VendorStrLen = AsciiStrLen (VendorStr);
   ASSERT (VendorStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
   VersionStr = PcdGetPtr (PcdSmbiosType0StringBiosVersion);
-  VerStrLen = AsciiStrLen (VersionStr);
+  VerStrLen  = AsciiStrLen (VersionStr);
   ASSERT (VerStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
-  DateStr = PcdGetPtr (PcdSmbiosType0StringBiosReleaseDate);
+  DateStr    = PcdGetPtr (PcdSmbiosType0StringBiosReleaseDate);
   DateStrLen = AsciiStrLen (DateStr);
   ASSERT (DateStrLen <= SMBIOS_STRING_MAX_LENGTH);
 
@@ -58,9 +58,9 @@ BiosVendorFunction(
     return EFI_OUT_OF_RESOURCES;
   }
 
-  CopyMem (SmbiosRecord, PcdSmbiosRecord, sizeof(SMBIOS_TABLE_TYPE0));
+  CopyMem (SmbiosRecord, PcdSmbiosRecord, sizeof (SMBIOS_TABLE_TYPE0));
 
-  SmbiosRecord->Hdr.Type = SMBIOS_TYPE_BIOS_INFORMATION;
+  SmbiosRecord->Hdr.Type   = SMBIOS_TYPE_BIOS_INFORMATION;
   SmbiosRecord->Hdr.Length = sizeof (SMBIOS_TABLE_TYPE0);
   SmbiosRecord->Hdr.Handle = 0;
 
@@ -74,7 +74,7 @@ BiosVendorFunction(
   //
   // Now we have got the full smbios record, call smbios protocol to add this record.
   //
-  Status = AddSmbiosRecord (Smbios, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER *) SmbiosRecord);
+  Status = AddSmbiosRecord (Smbios, &SmbiosHandle, (EFI_SMBIOS_TABLE_HEADER *)SmbiosRecord);
 
   FreePool (SmbiosRecord);
   return Status;

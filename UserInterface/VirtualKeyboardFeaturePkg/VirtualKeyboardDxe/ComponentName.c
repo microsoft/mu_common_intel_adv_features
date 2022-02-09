@@ -11,7 +11,7 @@
 //
 // EFI Component Name Protocol
 //
-GLOBAL_REMOVE_IF_UNREFERENCED EFI_COMPONENT_NAME_PROTOCOL gVirtualKeyboardComponentName = {
+GLOBAL_REMOVE_IF_UNREFERENCED EFI_COMPONENT_NAME_PROTOCOL  gVirtualKeyboardComponentName = {
   VirtualKeyboardComponentNameGetDriverName,
   VirtualKeyboardComponentNameGetControllerName,
   "eng"
@@ -20,16 +20,16 @@ GLOBAL_REMOVE_IF_UNREFERENCED EFI_COMPONENT_NAME_PROTOCOL gVirtualKeyboardCompon
 //
 // EFI Component Name 2 Protocol
 //
-GLOBAL_REMOVE_IF_UNREFERENCED EFI_COMPONENT_NAME2_PROTOCOL gVirtualKeyboardComponentName2 = {
-  (EFI_COMPONENT_NAME2_GET_DRIVER_NAME)     VirtualKeyboardComponentNameGetDriverName,
-  (EFI_COMPONENT_NAME2_GET_CONTROLLER_NAME) VirtualKeyboardComponentNameGetControllerName,
+GLOBAL_REMOVE_IF_UNREFERENCED EFI_COMPONENT_NAME2_PROTOCOL  gVirtualKeyboardComponentName2 = {
+  (EFI_COMPONENT_NAME2_GET_DRIVER_NAME)VirtualKeyboardComponentNameGetDriverName,
+  (EFI_COMPONENT_NAME2_GET_CONTROLLER_NAME)VirtualKeyboardComponentNameGetControllerName,
   "en"
 };
 
 //
 // Table of driver names
 //
-GLOBAL_REMOVE_IF_UNREFERENCED EFI_UNICODE_STRING_TABLE mVirtualKeyboardDriverNameTable[] = {
+GLOBAL_REMOVE_IF_UNREFERENCED EFI_UNICODE_STRING_TABLE  mVirtualKeyboardDriverNameTable[] = {
   {
     "eng;en",
     L"UEFI Virtual Keyboard Driver"
@@ -43,7 +43,7 @@ GLOBAL_REMOVE_IF_UNREFERENCED EFI_UNICODE_STRING_TABLE mVirtualKeyboardDriverNam
 //
 // Controller name string table
 //
-GLOBAL_REMOVE_IF_UNREFERENCED EFI_UNICODE_STRING_TABLE mVirtualKeyboardControllerNameStringTable[] = {
+GLOBAL_REMOVE_IF_UNREFERENCED EFI_UNICODE_STRING_TABLE  mVirtualKeyboardControllerNameStringTable[] = {
   {
     "eng",
     L"UEFI Virtual Keyboard Driver"
@@ -79,9 +79,9 @@ GLOBAL_REMOVE_IF_UNREFERENCED EFI_UNICODE_STRING_TABLE mVirtualKeyboardControlle
 EFI_STATUS
 EFIAPI
 VirtualKeyboardComponentNameGetDriverName (
-  IN  EFI_COMPONENT_NAME_PROTOCOL *This,
-  IN  CHAR8                       *Language,
-  OUT CHAR16                      **DriverName
+  IN  EFI_COMPONENT_NAME_PROTOCOL  *This,
+  IN  CHAR8                        *Language,
+  OUT CHAR16                       **DriverName
   )
 {
   return LookupUnicodeString2 (
@@ -137,8 +137,8 @@ EFI_STATUS
 EFIAPI
 VirtualKeyboardComponentNameGetControllerName (
   IN  EFI_COMPONENT_NAME_PROTOCOL *This,
-  IN  EFI_HANDLE                  ControllerHandle,
-  IN  EFI_HANDLE                  ChildHandle, OPTIONAL
+  IN  EFI_HANDLE ControllerHandle,
+  IN  EFI_HANDLE ChildHandle, OPTIONAL
   IN  CHAR8                       *Language,
   OUT CHAR16                      **ControllerName
   )
@@ -149,6 +149,7 @@ VirtualKeyboardComponentNameGetControllerName (
   if (ChildHandle != NULL) {
     return EFI_UNSUPPORTED;
   }
+
   return LookupUnicodeString2 (
            Language,
            This->SupportedLanguages,

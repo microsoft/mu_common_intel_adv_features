@@ -49,7 +49,7 @@ KeyLibSlowCompareMem (
 **/
 BOOLEAN
 EFIAPI
-KeyLibGenerateSalt(
+KeyLibGenerateSalt (
   IN OUT UINT8  *SaltValue,
   IN UINTN      SaltSize
   );
@@ -75,14 +75,13 @@ KeyLibGenerateSalt(
 BOOLEAN
 EFIAPI
 KeyLibGeneratePBKDF2Hash (
-  IN   UINT32              HashType,
-  IN   VOID                *Key,
-  IN   UINTN               KeySize,
-  IN   UINT8               *SaltValue,
-  IN   UINTN               SaltSize,
-  OUT  UINT8               *KeyHash,
-  IN   UINTN               KeyHashSize
+  IN   UINT32  HashType,
+  IN   VOID    *Key,
+  IN   UINTN   KeySize,
+  IN   UINT8   *SaltValue,
+  IN   UINTN   SaltSize,
+  OUT  UINT8   *KeyHash,
+  IN   UINTN   KeyHashSize
   );
 
 #endif
-

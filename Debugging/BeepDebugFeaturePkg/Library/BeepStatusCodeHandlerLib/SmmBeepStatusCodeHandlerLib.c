@@ -41,14 +41,14 @@
 EFI_STATUS
 EFIAPI
 BeepStatusCodeReportWorker (
-  IN EFI_STATUS_CODE_TYPE           CodeType,
-  IN EFI_STATUS_CODE_VALUE          Value,
-  IN UINT32                         Instance,
-  IN EFI_GUID                       *CallerId,
-  IN EFI_STATUS_CODE_DATA           *Data OPTIONAL
+  IN EFI_STATUS_CODE_TYPE   CodeType,
+  IN EFI_STATUS_CODE_VALUE  Value,
+  IN UINT32                 Instance,
+  IN EFI_GUID               *CallerId,
+  IN EFI_STATUS_CODE_DATA   *Data OPTIONAL
   )
 {
-  UINT32 BeepValue;
+  UINT32  BeepValue;
 
   BeepValue = GetBeepValueFromStatusCode (CodeType, Value);
   if (BeepValue != 0) {
@@ -72,18 +72,18 @@ BeepStatusCodeReportWorker (
 EFI_STATUS
 EFIAPI
 RegisterBeepBootTimeHandlers (
-  IN CONST EFI_GUID        *Protocol,
-  IN VOID                  *Interface,
-  IN EFI_HANDLE            Handle
+  IN CONST EFI_GUID  *Protocol,
+  IN VOID            *Interface,
+  IN EFI_HANDLE      Handle
   )
 {
-  EFI_STATUS                   Status;
-  EFI_SMM_RSC_HANDLER_PROTOCOL *RscHandlerProtocol;
+  EFI_STATUS                    Status;
+  EFI_SMM_RSC_HANDLER_PROTOCOL  *RscHandlerProtocol;
 
   Status = gSmst->SmmLocateProtocol (
                     &gEfiSmmRscHandlerProtocolGuid,
                     NULL,
-                    (VOID **) &RscHandlerProtocol
+                    (VOID **)&RscHandlerProtocol
                     );
   ASSERT_EFI_ERROR (Status);
 
@@ -107,13 +107,13 @@ RegisterBeepBootTimeHandlers (
 EFI_STATUS
 EFIAPI
 SmmBeepStatusCodeHandlerLibConstructor (
-  IN EFI_HANDLE           ImageHandle,
-  IN EFI_SYSTEM_TABLE     *SystemTable
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  EFI_STATUS                   Status;
-  VOID                         *Registration;
-  EFI_SMM_RSC_HANDLER_PROTOCOL *RscHandlerProtocol;
+  EFI_STATUS                    Status;
+  VOID                          *Registration;
+  EFI_SMM_RSC_HANDLER_PROTOCOL  *RscHandlerProtocol;
 
   if (!PcdGetBool (PcdStatusCodeUseBeep)) {
     return EFI_SUCCESS;
@@ -122,7 +122,7 @@ SmmBeepStatusCodeHandlerLibConstructor (
   Status = gSmst->SmmLocateProtocol (
                     &gEfiSmmRscHandlerProtocolGuid,
                     NULL,
-                    (VOID **) &RscHandlerProtocol
+                    (VOID **)&RscHandlerProtocol
                     );
   if (!EFI_ERROR (Status)) {
     RegisterBeepBootTimeHandlers (NULL, NULL, NULL);

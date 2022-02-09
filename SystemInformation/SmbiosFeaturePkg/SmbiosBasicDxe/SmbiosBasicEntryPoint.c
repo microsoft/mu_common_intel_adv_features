@@ -10,50 +10,50 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 EFI_STATUS
 EFIAPI
-BiosVendorFunction(
-  IN  EFI_SMBIOS_PROTOCOL   *Smbios
+BiosVendorFunction (
+  IN  EFI_SMBIOS_PROTOCOL  *Smbios
   );
 
 EFI_STATUS
 EFIAPI
-SystemManufacturerFunction(
-  IN  EFI_SMBIOS_PROTOCOL   *Smbios
+SystemManufacturerFunction (
+  IN  EFI_SMBIOS_PROTOCOL  *Smbios
   );
 
 EFI_STATUS
 EFIAPI
-BaseBoardManufacturerFunction(
-  IN  EFI_SMBIOS_PROTOCOL   *Smbios
+BaseBoardManufacturerFunction (
+  IN  EFI_SMBIOS_PROTOCOL  *Smbios
   );
 
 EFI_STATUS
 EFIAPI
-ChassisManufacturerFunction(
-  IN  EFI_SMBIOS_PROTOCOL   *Smbios
+ChassisManufacturerFunction (
+  IN  EFI_SMBIOS_PROTOCOL  *Smbios
   );
 
 EFI_STATUS
 EFIAPI
-BootInfoStatusFunction(
-  IN  EFI_SMBIOS_PROTOCOL   *Smbios
+BootInfoStatusFunction (
+  IN  EFI_SMBIOS_PROTOCOL  *Smbios
   );
 
 typedef
 EFI_STATUS
-(EFIAPI EFI_BASIC_SMBIOS_DATA_FUNCTION) (
+(EFIAPI EFI_BASIC_SMBIOS_DATA_FUNCTION)(
   IN  EFI_SMBIOS_PROTOCOL  *Smbios
   );
 
 typedef struct {
-  EFI_BASIC_SMBIOS_DATA_FUNCTION *Function;
+  EFI_BASIC_SMBIOS_DATA_FUNCTION    *Function;
 } EFI_BASIC_SMBIOS_DATA;
 
-EFI_BASIC_SMBIOS_DATA mSmbiosBasicDataFuncTable[] = {
-  {&BiosVendorFunction},
-  {&SystemManufacturerFunction},
-  {&BaseBoardManufacturerFunction},
-  {&ChassisManufacturerFunction},
-  {&BootInfoStatusFunction},
+EFI_BASIC_SMBIOS_DATA  mSmbiosBasicDataFuncTable[] = {
+  { &BiosVendorFunction            },
+  { &SystemManufacturerFunction    },
+  { &BaseBoardManufacturerFunction },
+  { &ChassisManufacturerFunction   },
+  { &BootInfoStatusFunction        },
 };
 
 /**
@@ -68,25 +68,25 @@ EFI_BASIC_SMBIOS_DATA mSmbiosBasicDataFuncTable[] = {
 **/
 EFI_STATUS
 EFIAPI
-SmbiosBasicEntryPoint(
-  IN EFI_HANDLE         ImageHandle,
-  IN EFI_SYSTEM_TABLE   *SystemTable
+SmbiosBasicEntryPoint (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
   UINTN                Index;
   EFI_STATUS           EfiStatus;
   EFI_SMBIOS_PROTOCOL  *Smbios;
 
-  EfiStatus = gBS->LocateProtocol(&gEfiSmbiosProtocolGuid, NULL, (VOID**)&Smbios);
-  if (EFI_ERROR(EfiStatus)) {
-    DEBUG((DEBUG_ERROR, "Could not locate SMBIOS protocol.  %r\n", EfiStatus));
+  EfiStatus = gBS->LocateProtocol (&gEfiSmbiosProtocolGuid, NULL, (VOID **)&Smbios);
+  if (EFI_ERROR (EfiStatus)) {
+    DEBUG ((DEBUG_ERROR, "Could not locate SMBIOS protocol.  %r\n", EfiStatus));
     return EfiStatus;
   }
 
-  for (Index = 0; Index < sizeof(mSmbiosBasicDataFuncTable)/sizeof(mSmbiosBasicDataFuncTable[0]); ++Index) {
-    EfiStatus = (*mSmbiosBasicDataFuncTable[Index].Function) (Smbios);
-    if (EFI_ERROR(EfiStatus)) {
-      DEBUG((DEBUG_ERROR, "Basic smbios store error.  Index=%d, ReturnStatus=%r\n", Index, EfiStatus));
+  for (Index = 0; Index < sizeof (mSmbiosBasicDataFuncTable)/sizeof (mSmbiosBasicDataFuncTable[0]); ++Index) {
+    EfiStatus = (*mSmbiosBasicDataFuncTable[Index].Function)(Smbios);
+    if (EFI_ERROR (EfiStatus)) {
+      DEBUG ((DEBUG_ERROR, "Basic smbios store error.  Index=%d, ReturnStatus=%r\n", Index, EfiStatus));
       return EfiStatus;
     }
   }
@@ -110,9 +110,9 @@ SmbiosBasicEntryPoint(
 **/
 EFI_STATUS
 AddSmbiosRecord (
-  IN EFI_SMBIOS_PROTOCOL        *Smbios,
-  OUT EFI_SMBIOS_HANDLE         *SmbiosHandle,
-  IN EFI_SMBIOS_TABLE_HEADER    *Record
+  IN EFI_SMBIOS_PROTOCOL      *Smbios,
+  OUT EFI_SMBIOS_HANDLE       *SmbiosHandle,
+  IN EFI_SMBIOS_TABLE_HEADER  *Record
   )
 {
   *SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;

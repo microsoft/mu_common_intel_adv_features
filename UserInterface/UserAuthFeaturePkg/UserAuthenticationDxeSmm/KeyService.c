@@ -47,11 +47,12 @@ KeyLibSlowCompareMem (
   UINT8  *Source;
 
   Destination = (UINT8 *)DestinationBuffer;
-  Source = (UINT8 *)SourceBuffer;
-  Delta = 0;
+  Source      = (UINT8 *)SourceBuffer;
+  Delta       = 0;
   for (Index = 0; Index < Length; Index++) {
     Delta |= Destination[Index] ^ Source[Index];
   }
+
   if (Delta == 0) {
     return 0;
   } else {
@@ -78,8 +79,9 @@ KeyLibGenerateSalt (
   if (SaltValue == NULL) {
     return FALSE;
   }
-  RandomSeed(NULL, 0);
-  RandomBytes(SaltValue, SaltSize);
+
+  RandomSeed (NULL, 0);
+  RandomBytes (SaltValue, SaltSize);
   return TRUE;
 }
 
@@ -101,13 +103,13 @@ KeyLibGenerateSalt (
 BOOLEAN
 EFIAPI
 KeyLibGeneratePBKDF2Hash (
-  IN   UINT32              HashType,
-  IN   VOID                *Key,
-  IN   UINTN               KeySize,
-  IN   UINT8               *SaltValue,
-  IN   UINTN               SaltSize,
-  OUT  UINT8               *KeyHash,
-  IN   UINTN               KeyHashSize
+  IN   UINT32  HashType,
+  IN   VOID    *Key,
+  IN   UINTN   KeySize,
+  IN   UINT8   *SaltValue,
+  IN   UINTN   SaltSize,
+  OUT  UINT8   *KeyHash,
+  IN   UINTN   KeyHashSize
   )
 {
   BOOLEAN  Result;
@@ -115,6 +117,7 @@ KeyLibGeneratePBKDF2Hash (
   if (HashType != HASH_TYPE_SHA256) {
     return FALSE;
   }
+
   if (KeyHashSize != SHA256_DIGEST_SIZE) {
     return FALSE;
   }

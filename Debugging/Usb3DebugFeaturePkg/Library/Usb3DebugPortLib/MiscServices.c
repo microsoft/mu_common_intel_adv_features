@@ -19,14 +19,15 @@
                             is not enabled.
 **/
 BOOLEAN
-XhcIsBitSet(
-  IN OUT  UINTN  Register,
-  IN      UINT32 BitMask
+XhcIsBitSet (
+  IN OUT  UINTN   Register,
+  IN      UINT32  BitMask
   )
 {
   if ((MmioRead32 (Register) & (BitMask)) != 0) {
     return TRUE;
   }
+
   return FALSE;
 }
 
@@ -37,14 +38,14 @@ XhcIsBitSet(
   @param[in]      BitMask     32-bit mask
 **/
 VOID
-XhcSetR32Bit(
-  IN OUT  UINTN  Register,
-  IN      UINT32 BitMask
+XhcSetR32Bit (
+  IN OUT  UINTN   Register,
+  IN      UINT32  BitMask
   )
 {
-  UINT32    RegisterValue;
+  UINT32  RegisterValue;
 
-  RegisterValue = MmioRead32 (Register);
+  RegisterValue  = MmioRead32 (Register);
   RegisterValue |= (UINT32)(BitMask);
   MmioWrite32 (Register, RegisterValue);
 }
@@ -56,14 +57,14 @@ XhcSetR32Bit(
   @param[in]      BitMask     32-bit mask
 **/
 VOID
-XhcClrR32Bit(
-  IN OUT  UINTN  Register,
-  IN      UINT32 BitMask
+XhcClrR32Bit (
+  IN OUT  UINTN   Register,
+  IN      UINT32  BitMask
   )
 {
-  UINT32    RegisterValue;
+  UINT32  RegisterValue;
 
-  RegisterValue = MmioRead32 (Register);
+  RegisterValue  = MmioRead32 (Register);
   RegisterValue &= (UINT32)(~(BitMask));
   MmioWrite32 (Register, RegisterValue);
 }
@@ -107,8 +108,8 @@ Usb3DebugPortInitialize (
 UINTN
 EFIAPI
 Usb3DebugPortWrite (
-  IN UINT8     *Buffer,
-  IN UINTN     NumberOfBytes
+  IN UINT8  *Buffer,
+  IN UINTN  NumberOfBytes
   )
 {
   Usb3DbgOut (Buffer, &NumberOfBytes);
@@ -133,8 +134,8 @@ Usb3DebugPortWrite (
 UINTN
 EFIAPI
 Usb3DebugPortRead (
-  OUT UINT8   *Buffer,
-  IN  UINTN   NumberOfBytes
+  OUT UINT8  *Buffer,
+  IN  UINTN  NumberOfBytes
   )
 {
   Usb3DbgIn (Buffer, &NumberOfBytes);
@@ -170,9 +171,9 @@ Usb3DebugPortPoll (
 **/
 VOID
 XhcWriteDebugReg (
-  IN USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN UINT32                   Offset,
-  IN UINT32                   Data
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN UINT32                    Offset,
+  IN UINT32                    Data
   )
 {
   EFI_PHYSICAL_ADDRESS  DebugCapabilityBase;
@@ -195,12 +196,12 @@ XhcWriteDebugReg (
 **/
 UINT32
 XhcReadDebugReg (
-  IN  USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN  UINT32                   Offset
+  IN  USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN  UINT32                    Offset
   )
 {
-  UINT32                  Data;
-  EFI_PHYSICAL_ADDRESS    DebugCapabilityBase;
+  UINT32                Data;
+  EFI_PHYSICAL_ADDRESS  DebugCapabilityBase;
 
   DebugCapabilityBase = Xhc->DebugCapabilityBase;
 
@@ -219,12 +220,12 @@ XhcReadDebugReg (
 **/
 VOID
 XhcSetDebugRegBit (
-  IN USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN UINT32                   Offset,
-  IN UINT32                   Bit
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN UINT32                    Offset,
+  IN UINT32                    Bit
   )
 {
-  UINT32                  Data;
+  UINT32  Data;
 
   Data  = XhcReadDebugReg (Xhc, Offset);
   Data |= Bit;
@@ -241,15 +242,15 @@ XhcSetDebugRegBit (
 **/
 VOID
 XhcClearDebugRegBit (
-  IN USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN UINT32                   Offset,
-  IN UINT32                   Bit
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN UINT32                    Offset,
+  IN UINT32                    Bit
   )
 {
-  UINT32                  Data;
+  UINT32  Data;
 
   Data  = XhcReadDebugReg (Xhc, Offset);
-  Data  &= ~Bit;
+  Data &= ~Bit;
   XhcWriteDebugReg (Xhc, Offset, Data);
 }
 
@@ -263,12 +264,12 @@ XhcClearDebugRegBit (
 **/
 VOID
 XhcWriteMmioReg (
-  IN USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN UINT32                   Offset,
-  IN UINT32                   Data
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN UINT32                    Offset,
+  IN UINT32                    Data
   )
 {
-  EFI_PHYSICAL_ADDRESS    MmioBase;
+  EFI_PHYSICAL_ADDRESS  MmioBase;
 
   MmioBase = Xhc->XhcMmioBase;
   MmioWrite32 ((UINTN)(MmioBase + Offset), Data);
@@ -287,12 +288,12 @@ XhcWriteMmioReg (
 **/
 UINT32
 XhcReadMmioReg (
-  IN  USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN  UINT32                   Offset
+  IN  USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN  UINT32                    Offset
   )
 {
-  UINT32                  Data;
-  EFI_PHYSICAL_ADDRESS    MmioBase;
+  UINT32                Data;
+  EFI_PHYSICAL_ADDRESS  MmioBase;
 
   MmioBase = Xhc->XhcMmioBase;
 
@@ -311,12 +312,12 @@ XhcReadMmioReg (
 **/
 VOID
 XhcSetMmioRegBit (
-  IN USB3_DEBUG_PORT_INSTANCE   *Xhc,
-  IN UINT32                     Offset,
-  IN UINT32                     Bit
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN UINT32                    Offset,
+  IN UINT32                    Bit
   )
 {
-  UINT32                  Data;
+  UINT32  Data;
 
   Data  = XhcReadMmioReg (Xhc, Offset);
   Data |= Bit;
@@ -333,15 +334,15 @@ XhcSetMmioRegBit (
 **/
 VOID
 XhcClearMmioRegBit (
-  IN USB3_DEBUG_PORT_INSTANCE   *Xhc,
-  IN UINT32                     Offset,
-  IN UINT32                     Bit
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN UINT32                    Offset,
+  IN UINT32                    Bit
   )
 {
-  UINT32                  Data;
+  UINT32  Data;
 
   Data  = XhcReadMmioReg (Xhc, Offset);
-  Data  &= ~Bit;
+  Data &= ~Bit;
   XhcWriteMmioReg (Xhc, Offset, Data);
 }
 
@@ -361,17 +362,17 @@ XhcClearMmioRegBit (
 **/
 EFI_STATUS
 XhcWaitMmioRegBit (
-  IN USB3_DEBUG_PORT_INSTANCE *Xhc,
-  IN UINT32                   Offset,
-  IN UINT32                   Bit,
-  IN BOOLEAN                  WaitToSet,
-  IN UINT32                   Timeout
+  IN USB3_DEBUG_PORT_INSTANCE  *Xhc,
+  IN UINT32                    Offset,
+  IN UINT32                    Bit,
+  IN BOOLEAN                   WaitToSet,
+  IN UINT32                    Timeout
   )
 {
-  UINT32                  Index;
-  UINTN                   Loop;
+  UINT32  Index;
+  UINTN   Loop;
 
-  Loop   = (Timeout * XHC_1_MILLISECOND / XHC_POLL_DELAY) + 1;
+  Loop = (Timeout * XHC_1_MILLISECOND / XHC_POLL_DELAY) + 1;
 
   for (Index = 0; Index < Loop; Index++) {
     if (XHC_REG_BIT_IS_SET (Xhc, Offset, Bit) == WaitToSet) {

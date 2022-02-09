@@ -26,12 +26,12 @@ GetUsb3DebugPortController (
   VOID
   )
 {
-  USB3_DEBUG_PORT_CONTROLLER       UsbDebugPort;
+  USB3_DEBUG_PORT_CONTROLLER  UsbDebugPort;
 
-  UsbDebugPort.Controller = 0;
-  UsbDebugPort.PciAddress.Bus = PcdGet8(PcdUsbSerialXhciBus);
-  UsbDebugPort.PciAddress.Device = PcdGet8(PcdUsbSerialXhciDev);
-  UsbDebugPort.PciAddress.Function = PcdGet8(PcdUsbSerialXhciFunc);
+  UsbDebugPort.Controller          = 0;
+  UsbDebugPort.PciAddress.Bus      = PcdGet8 (PcdUsbSerialXhciBus);
+  UsbDebugPort.PciAddress.Device   = PcdGet8 (PcdUsbSerialXhciDev);
+  UsbDebugPort.PciAddress.Function = PcdGet8 (PcdUsbSerialXhciFunc);
 
   return UsbDebugPort.Controller;
 }
@@ -51,7 +51,7 @@ GetUsb3DebugPortController (
 BOOLEAN
 EFIAPI
 SetUsb3DebugPortController (
-  UINT32        Controller
+  UINT32  Controller
   )
 {
   return FALSE;

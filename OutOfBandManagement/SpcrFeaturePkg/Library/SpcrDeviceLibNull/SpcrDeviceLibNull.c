@@ -16,7 +16,7 @@
   @retval NULL          Can not get device.
 
 **/
-EFI_DEVICE_PATH_PROTOCOL*
+EFI_DEVICE_PATH_PROTOCOL *
 EFIAPI
 GetSpcrDevice (
   VOID

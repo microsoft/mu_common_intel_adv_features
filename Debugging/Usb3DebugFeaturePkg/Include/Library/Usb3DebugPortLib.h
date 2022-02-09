@@ -46,10 +46,9 @@ Usb3DebugPortInitialize (
 UINTN
 EFIAPI
 Usb3DebugPortWrite (
-  IN UINT8     *Buffer,
-  IN UINTN     NumberOfBytes
+  IN UINT8  *Buffer,
+  IN UINTN  NumberOfBytes
   );
-
 
 /**
   Polls a USB3 debug port to see if there is any data waiting to be read.
